@@ -76,17 +76,17 @@
 
 7. Tapahtumien seuraukset, muistot ja tieto
 
-7.1 [ ] Toteuta tapahtumien vaikutukset hahmojen ja ryhmien suhteisiin.
+7.1 [x] Toteuta tapahtumien vaikutukset hahmojen ja ryhmien suhteisiin.
 
-7.2 [ ] Luo tapahtumista hahmoille muistot, joissa säilyvät kohde, voimakkuus ja syy.
+7.2 [x] Luo tapahtumista hahmoille muistot, joissa säilyvät kohde, voimakkuus ja syy.
 
-7.3 [ ] Tallenna, ketkä tietävät tapahtumasta ja ketkä tietävät sen todistajista.
+7.3 [x] Tallenna, ketkä tietävät tapahtumasta ja ketkä tietävät sen todistajista.
 
-7.4 [ ] Päivitä tapahtumien perusteella tavoitteiden etenemistä, resursseja ja lokaatioiden tilaa.
+7.4 [x] Päivitä tapahtumien perusteella tavoitteiden etenemistä, resursseja ja lokaatioiden tilaa.
 
-7.5 [ ] Päivitä aktiivisia konflikteja ja luo tarvittaessa uusia konflikteja.
+7.5 [x] Päivitä aktiivisia konflikteja ja luo tarvittaessa uusia konflikteja.
 
-7.6 [ ] Varmista, että seuraukset vaikuttavat myöhempien tapahtumien ja tehtävien todennäköisyyksiin.
+7.6 [x] Varmista, että seuraukset vaikuttavat myöhempien tapahtumien ja tehtävien todennäköisyyksiin.
 
 8. Jännitteiden ja tilanteiden tunnistaminen
 

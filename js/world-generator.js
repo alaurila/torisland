@@ -169,6 +169,7 @@ export function generateWorld(
       goal: {
         ...goals[index],
         priority: 55 + Math.floor(random() * 41),
+        progress: 0,
       },
     });
   });

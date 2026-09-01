@@ -5,6 +5,7 @@ import { createStorage } from "./storage.js";
 import { createUi } from "./ui.js";
 import { generateWorld } from "./world-generator.js";
 import { generateEvent } from "./events.js";
+import { applyEventConsequences } from "./consequences.js";
 
 function startApp() {
   const storage = createStorage();
@@ -13,7 +14,8 @@ function startApp() {
   const textGenerator = createTextGenerator();
   const ui = createUi(document);
   const worldState = generateWorld();
-  generateEvent(worldState);
+  const event = generateEvent(worldState);
+  applyEventConsequences(worldState, event);
 
   // Riippuvuudet ja nykyinen maailmantila kootaan sovelluksen juureen.
   const app = {

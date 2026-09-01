@@ -44,6 +44,8 @@ export function createEvent({
   templateId = null,
   conflictId = null,
   historical = false,
+  consequencesApplied = false,
+  effects = [],
 } = {}) {
   assertString(id, "event.id");
   assertString(type, "event.type");
@@ -59,6 +61,8 @@ export function createEvent({
   assertOptionalId(templateId, "event.templateId");
   assertOptionalId(conflictId, "event.conflictId");
   assertBoolean(historical, "event.historical");
+  assertBoolean(consequencesApplied, "event.consequencesApplied");
+  assertStringArray(effects, "event.effects");
 
   return {
     id,
@@ -72,6 +76,8 @@ export function createEvent({
     templateId,
     conflictId,
     historical,
+    consequencesApplied,
+    effects: [...effects],
   };
 }
 

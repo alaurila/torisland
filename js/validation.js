@@ -110,6 +110,7 @@ export function validateWorldState(worldState) {
   const actorIds = new Set([...characterIds, ...factionIds]);
   const subjectIds = new Set([...actorIds, ...locationIds]);
   const resourceIds = new Set(worldState.resources.map(({ id }) => id));
+  const eventIds = new Set(worldState.events.map(({ id }) => id));
 
   for (const relation of worldState.relations) {
     assertString(relation.sourceId, `Suhteen ${relation.id} sourceId`);
@@ -210,6 +211,33 @@ export function validateWorldState(worldState) {
       throw new Error(`Tapahtuman ${event.id} day pitää olla nolla tai positiivinen kokonaisluku.`);
     }
     assertString(event.summary, `Tapahtuman ${event.id} summary`);
+    assertBoolean(event.historical, `Tapahtuman ${event.id} historical`);
+    assertBoolean(event.consequencesApplied, `Tapahtuman ${event.id} consequencesApplied`);
+    assertStringArray(event.effects, `Tapahtuman ${event.id} effects`);
+  }
+
+  for (const memory of worldState.memories) {
+    assertReference(memory.ownerId, characterIds, `Muiston ${memory.id} ownerId`, false);
+    assertReference(memory.targetId, actorIds, `Muiston ${memory.id} targetId`, false);
+    assertReference(memory.eventId, eventIds, `Muiston ${memory.id} eventId`, false);
+    assertString(memory.type, `Muiston ${memory.id} type`);
+    assertNumber(memory.strength, `Muiston ${memory.id} strength`, { min: 0, max: 100 });
+    assertString(memory.reason, `Muiston ${memory.id} reason`);
+    if (!Number.isInteger(memory.day) || memory.day < 0) {
+      throw new Error(`Muiston ${memory.id} day pitää olla nolla tai positiivinen kokonaisluku.`);
+    }
+  }
+
+  for (const fact of worldState.knowledge) {
+    assertReference(fact.knowerId, characterIds, `Tiedon ${fact.id} knowerId`, false);
+    assertReference(fact.eventId, eventIds, `Tiedon ${fact.id} eventId`, false);
+    assertString(fact.type, `Tiedon ${fact.id} type`);
+    if (fact.subjectId !== null) {
+      assertReference(fact.subjectId, characterIds, `Tiedon ${fact.id} subjectId`, false);
+    }
+    if (!Number.isInteger(fact.day) || fact.day < 0) {
+      throw new Error(`Tiedon ${fact.id} day pitää olla nolla tai positiivinen kokonaisluku.`);
+    }
   }
 
   try {

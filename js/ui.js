@@ -74,7 +74,13 @@ export function createUi(document) {
       renderSummaryList(
         eventsElement,
         [...worldState.events].reverse().slice(0, 8),
-        (event) => `${event.historical ? "Ennen alkua" : `Päivä ${event.day}`}: ${event.summary}`,
+        (event) => {
+          const when = event.historical ? "Ennen alkua" : `Päivä ${event.day}`;
+          const effects = event.effects.length > 0
+            ? ` Seuraukset: ${event.effects.join("; ")}.`
+            : "";
+          return `${when}: ${event.summary}${effects}`;
+        },
       );
     },
   };
