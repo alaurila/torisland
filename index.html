@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Pientä tarinamaailmaa simuloiva juoni- ja tehtävägeneraattori."
+    />
+    <title>Tarinamaailma</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <p class="eyebrow">Juoni- ja tehtävägeneraattori</p>
+        <h1>Tarinamaailma</h1>
+        <p class="lead">
+          Maailma, jossa hahmojen tavoitteet, suhteet ja muistot synnyttävät
+          uusia tapahtumia.
+        </p>
+      </header>
+
+      <section class="status-card" aria-labelledby="world-heading">
+        <div>
+          <p class="label">Maailman tila</p>
+          <h2 id="world-heading">Valmiina luomaan ensimmäinen maailma</h2>
+        </div>
+        <span id="app-status" class="status" role="status">Käynnistetään…</span>
+      </section>
+
+      <section class="module-grid" aria-label="Sovelluksen osat">
+        <article>
+          <h2>Maailma</h2>
+          <p>Hahmot, lokaatiot, ryhmät ja niiden väliset suhteet.</p>
+        </article>
+        <article>
+          <h2>Tarina</h2>
+          <p>Jännitteistä tunnistetut tilanteet ja tapahtumaketjut.</p>
+        </article>
+        <article>
+          <h2>Tehtävät</h2>
+          <p>Maailman ongelmista muodostetut toimintavaihtoehdot.</p>
+        </article>
+      </section>
+    </main>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>

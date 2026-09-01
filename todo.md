@@ -2,13 +2,13 @@
 
 1. Projektin aloitus
 
-1.1 [ ] Luo vanilla JavaScript -projektin perusrakenne (`index.html`, `styles.css` ja JavaScript-moduulit).
+1.1 [x] Luo vanilla JavaScript -projektin perusrakenne (`index.html`, `styles.css` ja JavaScript-moduulit).
 
-1.2 [ ] Lisää sovelluksen käynnistysohjeet README-tiedostoon.
+1.2 [x] Lisää sovelluksen käynnistysohjeet README-tiedostoon.
 
-1.3 [ ] Määritä moduulit maailman simulaatiolle, tarinamoottorille, tekstigeneraattorille, käyttöliittymälle ja tallennukselle.
+1.3 [x] Määritä moduulit maailman simulaatiolle, tarinamoottorille, tekstigeneraattorille, käyttöliittymälle ja tallennukselle.
 
-1.4 [ ] Lisää projektille sopiva `.gitignore`.
+1.4 [x] Lisää projektille sopiva `.gitignore`.
 
 2. Maailman tietorakenne
 
