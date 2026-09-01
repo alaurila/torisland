@@ -22,7 +22,7 @@
 
 2.5 [x] Määritä tarpeiden, resurssien, salaisuuksien ja velkojen tietomallit.
 
-2.6 [ ] Lisää tietomallien validointi ja yksilöllisten tunnisteiden luonti.
+2.6 [x] Lisää tietomallien validointi ja yksilöllisten tunnisteiden luonti.
 
 3. Pienen maailman generointi
 

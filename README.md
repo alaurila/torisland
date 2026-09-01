@@ -34,6 +34,7 @@ index.html                 Sovelluksen HTML-runko
 styles.css                 Ulkoasu ja responsiivisuus
 js/app.js                  Sovelluksen käynnistys ja moduulien kokoaminen
 js/world-state.js          Serialisoitava maailmantila ja tietomallien tehtaat
+js/validation.js           Tietomallien validointi ja tunnisteiden luonti
 js/world-simulation.js     Maailman eteneminen ja tapahtumien seuraukset
 js/story-engine.js         Jännitteiden ja tarinatilanteiden tunnistaminen
 js/text-generator.js       Rakenteisen datan esittäminen tekstinä
