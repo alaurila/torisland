@@ -9,6 +9,7 @@ import {
   validateWorldState,
 } from "./validation.js";
 import { getProfession } from "./professions/index.js";
+import { getGoal } from "./goals.js";
 
 /**
  * Luo uuden, JSON-muotoon serialisoitavan maailmantilan.
@@ -49,6 +50,7 @@ export function createCharacter({
   firstName,
   lastName,
   race,
+  age,
   aliases = [],
   professionId,
   locationId = null,
@@ -60,6 +62,9 @@ export function createCharacter({
   assertString(firstName, "character.firstName");
   assertString(lastName, "character.lastName");
   assertString(race, "character.race");
+  if (!Number.isInteger(age) || age < 18) {
+    throw new RangeError("character.age pitää olla vähintään 18 vuotta.");
+  }
   assertStringArray(aliases, "character.aliases");
   assertString(professionId, "character.professionId");
   const profession = getProfession(professionId);
@@ -75,6 +80,7 @@ export function createCharacter({
     lastName,
     name: `${firstName.trim()} ${lastName.trim()}`,
     race,
+    age,
     aliases: [...new Set(aliases.map((alias) => alias.trim()))],
     professionId,
     role: profession.name,
@@ -89,16 +95,22 @@ export function createCharacter({
 export function updateCharacterIdentity(
   worldState,
   characterId,
-  { firstName, lastName, race, aliases = [], professionId },
+  { firstName, lastName, race, age, aliases = [], professionId, factionId = null },
 ) {
   assertString(characterId, "characterId");
   assertString(firstName, "character.firstName");
   assertString(lastName, "character.lastName");
   assertString(race, "character.race");
+  if (!Number.isInteger(age) || age < 18) {
+    throw new RangeError("character.age pitää olla vähintään 18 vuotta.");
+  }
   assertStringArray(aliases, "character.aliases");
   assertString(professionId, "character.professionId");
   const profession = getProfession(professionId);
   if (!profession) throw new Error(`Tuntematon ammatti "${professionId}".`);
+  if (factionId !== null && !worldState.factions.some(({ id }) => id === factionId)) {
+    throw new Error(`Tuntematonta kiltaa "${factionId}" ei löytynyt.`);
+  }
   const character = worldState.characters.find(({ id }) => id === characterId);
   if (!character) throw new Error(`Hahmoa ${characterId} ei löytynyt.`);
 
@@ -106,9 +118,29 @@ export function updateCharacterIdentity(
   character.lastName = lastName.trim();
   character.name = `${character.firstName} ${character.lastName}`;
   character.race = race.trim();
+  character.age = age;
   character.aliases = [...new Set(aliases.map((alias) => alias.trim()))];
   character.professionId = profession.id;
   character.role = profession.name;
+  character.factionIds = factionId === null ? [] : [factionId];
+  validateWorldState(worldState);
+  return character;
+}
+
+/** Vaihtaa hahmon tavoitteen ja aloittaa sen etenemisen alusta. */
+export function updateCharacterGoal(worldState, characterId, goalType) {
+  assertString(characterId, "characterId");
+  assertString(goalType, "goalType");
+  const character = worldState.characters.find(({ id }) => id === characterId);
+  if (!character) throw new Error(`Hahmoa ${characterId} ei löytynyt.`);
+  const goal = getGoal(goalType);
+  if (!goal) throw new Error(`Tuntematon tavoite "${goalType}".`);
+
+  character.goal = {
+    ...goal,
+    priority: character.goal.priority,
+    progress: 0,
+  };
   validateWorldState(worldState);
   return character;
 }

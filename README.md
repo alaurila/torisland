@@ -43,6 +43,7 @@ js/consequences.js         Tapahtumien seuraukset, muistot ja tieto
 js/story-engine.js         Jännitteiden laskenta ja tilanteiden tunnistaminen
 js/quest-engine.js         Tehtävätemplatet, muodostaminen ja ratkaiseminen
 js/professions/            Ammattien äitiluokka, aliluokat ja katalogi
+js/goals.js                Hahmojen tavoitekatalogi
 js/world-simulation.js     Maailman eteneminen ja tapahtumien seuraukset
 js/story-engine.js         Jännitteiden ja tarinatilanteiden tunnistaminen
 js/text-generator.js       Rakenteisen datan esittäminen tekstinä

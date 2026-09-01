@@ -38,22 +38,12 @@
         </div>
       </section>
 
-      <section class="module-grid" aria-label="Sovelluksen osat">
-        <article>
-          <p id="character-count" class="label">Hahmot</p>
-          <h2>Hahmot</h2>
-          <ul id="character-summary" class="summary-list"></ul>
-        </article>
-        <article>
-          <p id="location-count" class="label">Lokaatiot</p>
-          <h2>Lokaatiot</h2>
-          <ul id="location-summary" class="summary-list"></ul>
-        </article>
-        <article>
-          <p id="faction-count" class="label">Ryhmät</p>
-          <h2>Ryhmät</h2>
-          <ul id="faction-summary" class="summary-list"></ul>
-        </article>
+      <section class="relations-card" aria-labelledby="quests-heading">
+        <div>
+          <p id="quest-count" class="label">Tehtävät</p>
+          <h2 id="quests-heading">Aktiiviset tehtävät</h2>
+        </div>
+        <div id="quest-summary" class="quest-list"></div>
       </section>
 
       <section class="relations-card" aria-labelledby="relations-heading">
@@ -88,13 +78,6 @@
         <ul id="situation-summary" class="summary-list"></ul>
       </section>
 
-      <section class="relations-card" aria-labelledby="quests-heading">
-        <div>
-          <p id="quest-count" class="label">Tehtävät</p>
-          <h2 id="quests-heading">Aktiiviset tehtävät</h2>
-        </div>
-        <div id="quest-summary" class="quest-list"></div>
-      </section>
       </section>
 
       <section id="panel-locations" class="tab-panel" role="tabpanel" data-tab-panel="locations" hidden>

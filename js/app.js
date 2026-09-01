@@ -5,7 +5,7 @@ import { createStorage } from "./storage.js";
 import { createUi } from "./ui.js";
 import { generateNewcomer, generateWorld } from "./world-generator.js";
 import { createQuestEngine } from "./quest-engine.js";
-import { updateCharacterIdentity } from "./world-state.js";
+import { updateCharacterGoal, updateCharacterIdentity } from "./world-state.js";
 
 function startApp() {
   const storage = createStorage();
@@ -55,13 +55,19 @@ function startApp() {
     const situations = app.storyEngine.findSituations(app.worldState);
     app.questEngine.formQuests(app.worldState, situations);
     app.ui.renderWorldSummary(app.worldState);
-    app.ui.setStatus(`Hahmo nimetty uudelleen: ${character.name}`);
+    app.ui.setStatus(`Hahmon tiedot päivitetty: ${character.name}`);
   });
   app.ui.bindCharacterCreation(() => {
     const character = generateNewcomer(app.worldState);
     app.ui.renderWorldSummary(app.worldState);
     app.ui.showPerson(character.id);
     app.ui.setStatus(`Uusi henkilö saapui kylään: ${character.name}`);
+  });
+  app.ui.bindCharacterGoalUpdate((characterId, goalType) => {
+    const character = updateCharacterGoal(app.worldState, characterId, goalType);
+    app.ui.renderWorldSummary(app.worldState);
+    app.ui.showPerson(character.id);
+    app.ui.setStatus(`Uusi tavoite asetettu: ${character.name} haluaa ${character.goal.label}`);
   });
 }
 

@@ -1,4 +1,5 @@
 import { PROFESSIONS } from "./professions/index.js";
+import { GOALS } from "./goals.js";
 
 /**
  * Vastaa DOM-päivityksistä ja käyttöliittymän tapahtumista.
@@ -6,12 +7,6 @@ import { PROFESSIONS } from "./professions/index.js";
 export function createUi(document) {
   const statusElement = document.querySelector("#app-status");
   const headingElement = document.querySelector("#world-heading");
-  const charactersElement = document.querySelector("#character-summary");
-  const locationsElement = document.querySelector("#location-summary");
-  const factionsElement = document.querySelector("#faction-summary");
-  const characterCountElement = document.querySelector("#character-count");
-  const locationCountElement = document.querySelector("#location-count");
-  const factionCountElement = document.querySelector("#faction-count");
   const relationCountElement = document.querySelector("#relation-count");
   const relationsElement = document.querySelector("#relation-summary");
   const conflictCountElement = document.querySelector("#conflict-count");
@@ -83,14 +78,25 @@ export function createUi(document) {
           firstName: form.elements.firstName.value.trim(),
           lastName: form.elements.lastName.value.trim(),
           race: form.elements.race.value.trim(),
+          age: Number(form.elements.age.value),
           aliases,
           professionId: form.elements.professionId.value,
+          factionId: form.elements.factionId.value || null,
         });
       });
     },
 
     bindCharacterCreation(handler) {
       addCharacterButton?.addEventListener("click", handler);
+    },
+
+    bindCharacterGoalUpdate(handler) {
+      personDetail?.addEventListener("submit", (event) => {
+        const form = event.target.closest?.("form[data-goal-character-id]");
+        if (!form) return;
+        event.preventDefault();
+        handler(form.dataset.goalCharacterId, form.elements.goalType.value);
+      });
     },
 
     showPerson(personId) {
@@ -109,9 +115,6 @@ export function createUi(document) {
         headingElement.textContent = `Päivä ${worldState.day} — pieni maailma herää`;
       }
 
-      setText(characterCountElement, `${worldState.characters.length} hahmoa`);
-      setText(locationCountElement, `${worldState.locations.length} lokaatiota`);
-      setText(factionCountElement, `${worldState.factions.length} ryhmää`);
       setText(relationCountElement, `${worldState.relations.length} suhdetta`);
       const unresolvedConflicts = worldState.conflicts.filter(
         ({ status }) => status === "unresolved",
@@ -130,21 +133,6 @@ export function createUi(document) {
         ),
       );
 
-      renderSummaryList(
-        charactersElement,
-        worldState.characters,
-        (character) => {
-          const relations = worldState.relations
-            .filter(({ sourceId }) => sourceId === character.id)
-            .sort((left, right) => Math.abs(right.value) - Math.abs(left.value))
-            .slice(0, 2)
-            .map((relation) => `${entities.get(relation.targetId)?.name}: ${signed(relation.value)}`)
-            .join(", ");
-          return `${character.name}, ${character.role} — tavoite ${character.goal.progress}/100. Suhteet: ${relations || "ei merkittäviä"}.`;
-        },
-      );
-      renderSummaryList(locationsElement, worldState.locations, (location) => location.name);
-      renderSummaryList(factionsElement, worldState.factions, (faction) => faction.name);
       renderSummaryList(
         relationsElement,
         [...worldState.relations]
@@ -384,18 +372,19 @@ function renderPersonDetail(element, worldState, personId) {
   title.textContent = person.name;
   const meta = element.ownerDocument.createElement("p");
   meta.className = "person-meta";
-  meta.textContent = `${person.race} · ${location?.name ?? "Ei sijaintia"} · ${guilds.join(", ") || "Ei kiltaa"}`;
+  meta.textContent = `${person.race} · ${person.age} vuotta · ${location?.name ?? "Ei sijaintia"} · ${guilds.join(", ") || "Ei kiltaa"}`;
   heading.append(eyebrow, title, meta);
 
   element.replaceChildren(
     heading,
-    identityForm(element.ownerDocument, person),
+    identityForm(element.ownerDocument, person, worldState.factions),
     statusBlock(element.ownerDocument, "Ammatti", [profession?.describe() ?? person.role]),
     statusBlock(element.ownerDocument, "Lisänimet ja aliakset", person.aliases),
     statusBlock(element.ownerDocument, "Ominaisuudet", person.traits),
     statusBlock(element.ownerDocument, "Tavoite", [
       `${person.goal.label} — eteneminen ${person.goal.progress}/100, prioriteetti ${person.goal.priority}/100`,
     ]),
+    goalForm(element.ownerDocument, person),
     statusBlock(element.ownerDocument, "Suhteet", relations, true),
     statusBlock(element.ownerDocument, "Muistot", memories),
     statusBlock(element.ownerDocument, "Tiedot", knowledge),
@@ -404,7 +393,7 @@ function renderPersonDetail(element, worldState, personId) {
   );
 }
 
-function identityForm(document, person) {
+function identityForm(document, person, factions) {
   const details = document.createElement("details");
   details.className = "identity-editor";
   const summary = document.createElement("summary");
@@ -418,8 +407,10 @@ function identityForm(document, person) {
     identityField(document, "Etunimi", "firstName", person.firstName, true),
     identityField(document, "Sukunimi", "lastName", person.lastName, true),
     identityField(document, "Rotu", "race", person.race, true),
+    identityNumberField(document, "Ikä", "age", person.age, 18),
     identityField(document, "Lisänimet pilkuilla", "aliases", person.aliases.join(", "), false),
     professionField(document, person.professionId),
+    factionField(document, factions, person.factionIds[0] ?? null),
   );
   const submit = document.createElement("button");
   submit.type = "submit";
@@ -445,6 +436,22 @@ function identityField(document, labelText, name, value, required) {
   return label;
 }
 
+function identityNumberField(document, labelText, name, value, minimum) {
+  const label = document.createElement("label");
+  label.className = "identity-field";
+  const text = document.createElement("span");
+  text.textContent = labelText;
+  const input = document.createElement("input");
+  input.type = "number";
+  input.name = name;
+  input.value = String(value);
+  input.min = String(minimum);
+  input.step = "1";
+  input.required = true;
+  label.append(text, input);
+  return label;
+}
+
 function professionField(document, selectedProfessionId) {
   const label = document.createElement("label");
   label.className = "identity-field";
@@ -462,6 +469,63 @@ function professionField(document, selectedProfessionId) {
   }
   label.append(text, select);
   return label;
+}
+
+function factionField(document, factions, selectedFactionId) {
+  const label = document.createElement("label");
+  label.className = "identity-field";
+  const text = document.createElement("span");
+  text.textContent = "Kilta";
+  const select = document.createElement("select");
+  select.name = "factionId";
+  const noFaction = document.createElement("option");
+  noFaction.value = "";
+  noFaction.textContent = "Ei kiltaa";
+  noFaction.selected = selectedFactionId === null;
+  select.append(noFaction);
+  for (const faction of factions) {
+    const option = document.createElement("option");
+    option.value = faction.id;
+    option.textContent = faction.name;
+    option.selected = faction.id === selectedFactionId;
+    select.append(option);
+  }
+  label.append(text, select);
+  return label;
+}
+
+function goalForm(document, person) {
+  const details = document.createElement("details");
+  details.className = "identity-editor goal-editor";
+  const summary = document.createElement("summary");
+  summary.textContent = "◎ Muokkaa tavoitetta";
+  const form = document.createElement("form");
+  form.className = "identity-form";
+  form.dataset.goalCharacterId = person.id;
+  const label = document.createElement("label");
+  label.className = "identity-field";
+  const labelText = document.createElement("span");
+  labelText.textContent = "Uusi tavoite";
+  const select = document.createElement("select");
+  select.name = "goalType";
+  for (const goal of GOALS) {
+    const option = document.createElement("option");
+    option.value = goal.type;
+    option.textContent = goal.label;
+    option.selected = goal.type === person.goal.type;
+    select.append(option);
+  }
+  label.append(labelText, select);
+  const warning = document.createElement("p");
+  warning.className = "form-note";
+  warning.textContent = "Tavoitteen vaihtaminen nollaa nykyisen etenemisen.";
+  const submit = document.createElement("button");
+  submit.type = "submit";
+  submit.className = "primary-button";
+  submit.textContent = "Vaihda tavoite";
+  form.append(label, warning, submit);
+  details.append(summary, form);
+  return details;
 }
 
 function relationRow(document, other, direction, relation) {

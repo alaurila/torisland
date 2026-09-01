@@ -1,4 +1,5 @@
 import { getProfession } from "./professions/index.js";
+import { getGoal } from "./goals.js";
 
 const WORLD_COLLECTIONS = [
   "characters",
@@ -146,6 +147,9 @@ export function validateWorldState(worldState) {
       throw new Error(`Hahmon ${character.id} koko nimi ei vastaa etu- ja sukunimeä.`);
     }
     assertString(character.race, `Hahmon ${character.id} race`);
+    if (!Number.isInteger(character.age) || character.age < 18) {
+      throw new Error(`Hahmon ${character.id} pitää olla vähintään 18-vuotias.`);
+    }
     assertStringArray(character.aliases, `Hahmon ${character.id} aliases`);
     assertString(character.professionId, `Hahmon ${character.id} professionId`);
     const profession = getProfession(character.professionId);
@@ -154,6 +158,10 @@ export function validateWorldState(worldState) {
     }
     assertReference(character.locationId, locationIds, `Hahmon ${character.id} locationId`);
     assertNumber(character.goal.progress, `Hahmon ${character.id} goal.progress`, { min: 0, max: 100 });
+    const goal = getGoal(character.goal.type);
+    if (!goal || character.goal.label !== goal.label) {
+      throw new Error(`Hahmon ${character.id} tavoite ei vastaa tavoitekatalogia.`);
+    }
     for (const factionId of character.factionIds) {
       assertReference(factionId, factionIds, `Hahmon ${character.id} factionIds`);
     }
