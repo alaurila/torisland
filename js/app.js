@@ -4,19 +4,15 @@ import { createTextGenerator } from "./text-generator.js";
 import { createStorage } from "./storage.js";
 import { createUi } from "./ui.js";
 import { generateWorld } from "./world-generator.js";
-import { generateEvent } from "./events.js";
-import { applyEventConsequences } from "./consequences.js";
 
 function startApp() {
   const storage = createStorage();
-  const worldSimulation = createWorldSimulation();
   const storyEngine = createStoryEngine();
+  const worldSimulation = createWorldSimulation({ storyEngine });
   const textGenerator = createTextGenerator();
   const ui = createUi(document);
   const worldState = generateWorld();
-  const event = generateEvent(worldState);
-  applyEventConsequences(worldState, event);
-  storyEngine.findSituations(worldState);
+  worldSimulation.advance(worldState, { advanceDay: false });
 
   // Riippuvuudet ja nykyinen maailmantila kootaan sovelluksen juureen.
   const app = {
@@ -30,6 +26,13 @@ function startApp() {
 
   app.ui.renderWorldSummary(app.worldState);
   app.ui.setStatus(`${app.worldState.activeSituations.length} tilannetta löydetty`);
+  app.ui.bindAdvance(() => {
+    const result = app.worldSimulation.advance(app.worldState);
+    app.ui.renderWorldSummary(app.worldState);
+    app.ui.setStatus(
+      `Päivä ${result.day} — satunnaisuus ${Math.round(result.randomness * 100)} %`,
+    );
+  });
 }
 
 startApp();

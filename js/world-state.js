@@ -31,7 +31,9 @@ export function createWorldState({ day = 1 } = {}) {
     knowledge: [],
     events: [],
     activeSituations: [],
+    activeQuests: [],
     completedQuests: [],
+    playerDecisions: [],
   };
 
   validateWorldState(worldState);
@@ -65,7 +67,7 @@ export function createCharacter({
     locationId,
     factionIds: [...factionIds],
     traits: [...traits],
-    goal: { ...goal },
+    goal: { progress: 0, ...goal },
   };
 }
 
@@ -118,7 +120,7 @@ export function createFaction({
     description,
     locationId,
     traits: [...traits],
-    goal: goal ? { ...goal } : null,
+    goal: goal ? { progress: 0, ...goal } : null,
   };
 }
 

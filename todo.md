@@ -120,15 +120,15 @@
 
 10. Jatkuva maailman simulaatio
 
-10.1 [ ] Toteuta päivän tai vuoron eteneminen.
+10.1 [x] Toteuta päivän tai vuoron eteneminen.
 
-10.2 [ ] Anna hahmojen yrittää edistää tavoitteitaan jokaisella kierroksella.
+10.2 [x] Anna hahmojen yrittää edistää tavoitteitaan jokaisella kierroksella.
 
-10.3 [ ] Suorita kierroksella ketju: tavoitteet → tapahtumat → seuraukset → tilanteet → tehtävät.
+10.3 [x] Suorita kierroksella ketju: tavoitteet → tapahtumat → seuraukset → tilanteet → tehtävät.
 
-10.4 [ ] Huomioi pelaajan päätökset seuraavan maailman tilan muodostamisessa.
+10.4 [x] Huomioi pelaajan päätökset seuraavan maailman tilan muodostamisessa.
 
-10.5 [ ] Vähennä puhdasta satunnaisuutta maailman historian karttuessa.
+10.5 [x] Vähennä puhdasta satunnaisuutta maailman historian karttuessa.
 
 11. Tallennus
 

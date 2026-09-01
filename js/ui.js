@@ -18,12 +18,17 @@ export function createUi(document) {
   const eventsElement = document.querySelector("#event-summary");
   const situationCountElement = document.querySelector("#situation-count");
   const situationsElement = document.querySelector("#situation-summary");
+  const advanceButton = document.querySelector("#advance-day");
 
   return {
     setStatus(message) {
       if (statusElement) {
         statusElement.textContent = message;
       }
+    },
+
+    bindAdvance(handler) {
+      advanceButton?.addEventListener("click", handler);
     },
 
     renderWorldSummary(worldState) {

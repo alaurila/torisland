@@ -12,7 +12,9 @@ const WORLD_COLLECTIONS = [
   "knowledge",
   "events",
   "activeSituations",
+  "activeQuests",
   "completedQuests",
+  "playerDecisions",
 ];
 
 let fallbackIdCounter = 0;
@@ -136,6 +138,7 @@ export function validateWorldState(worldState) {
 
   for (const character of worldState.characters) {
     assertReference(character.locationId, locationIds, `Hahmon ${character.id} locationId`);
+    assertNumber(character.goal.progress, `Hahmon ${character.id} goal.progress`, { min: 0, max: 100 });
     for (const factionId of character.factionIds) {
       assertReference(factionId, factionIds, `Hahmon ${character.id} factionIds`);
     }
@@ -143,6 +146,9 @@ export function validateWorldState(worldState) {
 
   for (const faction of worldState.factions) {
     assertReference(faction.locationId, locationIds, `Ryhmän ${faction.id} locationId`);
+    if (faction.goal?.progress !== undefined) {
+      assertNumber(faction.goal.progress, `Ryhmän ${faction.id} goal.progress`, { min: 0, max: 100 });
+    }
   }
 
   for (const need of worldState.needs) {
@@ -267,6 +273,20 @@ export function validateWorldState(worldState) {
     }
     if (!Number.isInteger(situation.createdDay) || situation.createdDay < 1) {
       throw new Error(`Tilanteen ${situation.id} createdDay pitää olla positiivinen kokonaisluku.`);
+    }
+  }
+
+  for (const decision of worldState.playerDecisions) {
+    assertString(decision.description, `Pelaajapäätöksen ${decision.id} description`);
+    if (!Number.isInteger(decision.day) || decision.day < 1) {
+      throw new Error(`Pelaajapäätöksen ${decision.id} day pitää olla positiivinen kokonaisluku.`);
+    }
+    if (
+      !Array.isArray(decision.relationChanges) ||
+      !Array.isArray(decision.conflictChanges) ||
+      !Array.isArray(decision.goalChanges)
+    ) {
+      throw new Error(`Pelaajapäätöksen ${decision.id} muutosten pitää olla taulukoita.`);
     }
   }
 

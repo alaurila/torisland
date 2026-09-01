@@ -85,8 +85,11 @@ export function createEvent({
  * Valitsee maailman aktiivisista konflikteista kelvollisen tapahtuman ja lisää
  * sen tapahtumahistoriaan.
  */
-export function generateEvent(worldState, random = Math.random) {
+export function generateEvent(worldState, random = Math.random, { randomness = 1 } = {}) {
   if (typeof random !== "function") throw new TypeError("random pitää olla funktio.");
+  if (!Number.isFinite(randomness) || randomness < 0 || randomness > 1) {
+    throw new RangeError("randomness pitää olla luku väliltä 0...1.");
+  }
   const entities = entityMap(worldState);
   const candidates = [];
 
@@ -109,7 +112,9 @@ export function generateEvent(worldState, random = Math.random) {
     throw new Error("Maailman tilaan sopivaa tapahtumatemplatea ei löytynyt.");
   }
 
-  const selected = weightedPick(candidates, random);
+  const selected = random() < randomness
+    ? weightedPick(candidates, random)
+    : candidates.reduce((best, candidate) => candidate.weight > best.weight ? candidate : best);
   const { context, eventTemplate } = selected;
   const event = createEvent({
     type: eventTemplate.type,
