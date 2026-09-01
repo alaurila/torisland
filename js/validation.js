@@ -1,3 +1,5 @@
+import { getProfession } from "./professions/index.js";
+
 const WORLD_COLLECTIONS = [
   "characters",
   "locations",
@@ -137,6 +139,19 @@ export function validateWorldState(worldState) {
   }
 
   for (const character of worldState.characters) {
+    assertString(character.firstName, `Hahmon ${character.id} firstName`);
+    assertString(character.lastName, `Hahmon ${character.id} lastName`);
+    assertString(character.name, `Hahmon ${character.id} name`);
+    if (character.name !== `${character.firstName} ${character.lastName}`) {
+      throw new Error(`Hahmon ${character.id} koko nimi ei vastaa etu- ja sukunimeä.`);
+    }
+    assertString(character.race, `Hahmon ${character.id} race`);
+    assertStringArray(character.aliases, `Hahmon ${character.id} aliases`);
+    assertString(character.professionId, `Hahmon ${character.id} professionId`);
+    const profession = getProfession(character.professionId);
+    if (!profession || character.role !== profession.name) {
+      throw new Error(`Hahmon ${character.id} ammatti ei vastaa ammattikatalogia.`);
+    }
     assertReference(character.locationId, locationIds, `Hahmon ${character.id} locationId`);
     assertNumber(character.goal.progress, `Hahmon ${character.id} goal.progress`, { min: 0, max: 100 });
     for (const factionId of character.factionIds) {

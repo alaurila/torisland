@@ -12,6 +12,7 @@ import { createRelation } from "./relations.js";
 import { assertWorldHasStorySeeds, createConflict } from "./conflicts.js";
 import { createId, validateWorldState } from "./validation.js";
 import { createEvent } from "./events.js";
+import { PROFESSIONS } from "./professions/index.js";
 
 export const WORLD_LIMITS = Object.freeze({
   characters: 10,
@@ -32,17 +33,28 @@ const CHARACTER_NAMES = [
   "Aila",
 ];
 
-const ROLES = [
-  "kauppias",
-  "palkkasoturi",
-  "kylänvanhin",
-  "parantaja",
-  "satamavahti",
-  "kartantekijä",
-  "seppä",
-  "sanansaattaja",
-  "majatalonpitäjä",
-  "aarteenetsijä",
+const CHARACTER_SURNAMES = [
+  "Jokinen",
+  "Rautakäsi",
+  "Valkeala",
+  "Kuunsilta",
+  "Myrskylä",
+  "Korpela",
+  "Hopeajuuri",
+  "Varjola",
+  "Kivivaara",
+  "Tähtinen",
+];
+
+const RACES = ["ihminen", "haltia", "kääpiö", "puolituinen", "örkki", "tiefling"];
+
+const ALIASES = [
+  "Kettu",
+  "Harmaa",
+  "Sataman varjo",
+  "Kolikkokuningas",
+  "Hiljainen",
+  "Korppi",
 ];
 
 const TRAITS = [
@@ -153,16 +165,20 @@ export function generateWorld(
   );
 
   const names = sample(CHARACTER_NAMES, characterCount, random);
-  const roles = sample(ROLES, characterCount, random);
+  const surnames = sample(CHARACTER_SURNAMES, characterCount, random);
+  const professions = sample(PROFESSIONS, characterCount, random);
   const goals = sample(GOALS, characterCount, random);
 
-  worldState.characters = names.map((name, index) => {
+  worldState.characters = names.map((firstName, index) => {
     const faction = worldState.factions[index % worldState.factions.length];
     const belongsToFaction = index < worldState.factions.length || random() < 0.7;
 
     return createCharacter({
-      name,
-      role: roles[index],
+      firstName,
+      lastName: surnames[index],
+      race: pick(RACES, random),
+      aliases: random() < 0.35 ? [pick(ALIASES, random)] : [],
+      professionId: professions[index].id,
       locationId: pick(worldState.locations, random).id,
       factionIds: belongsToFaction ? [faction.id] : [],
       traits: sample(TRAITS, 3, random),
@@ -180,6 +196,39 @@ export function generateWorld(
   validateWorldState(worldState);
   assertWorldHasStorySeeds(worldState);
   return worldState;
+}
+
+/**
+ * Lisää maailmaan uuden tulokkaan ilman sosiaalista historiaa. Hahmolle ei
+ * luoda suhteita, muistoja, tietoja, velkoja, ryhmäjäsenyyksiä tai konflikteja.
+ */
+export function generateNewcomer(worldState, random = Math.random) {
+  if (typeof random !== "function") throw new TypeError("random pitää olla funktio.");
+  if (worldState.locations.length === 0) throw new Error("Uusi hahmo tarvitsee lokaation.");
+  const usedFirstNames = new Set(worldState.characters.map(({ firstName }) => firstName));
+  const availableFirstNames = CHARACTER_NAMES.filter((name) => !usedFirstNames.has(name));
+  const firstName = pick(availableFirstNames.length > 0 ? availableFirstNames : CHARACTER_NAMES, random);
+  const lastName = pick(CHARACTER_SURNAMES, random);
+  const profession = pick(PROFESSIONS, random);
+  const goal = pick(GOALS, random);
+  const character = createCharacter({
+    firstName,
+    lastName,
+    race: pick(RACES, random),
+    aliases: [],
+    professionId: profession.id,
+    locationId: pick(worldState.locations, random).id,
+    factionIds: [],
+    traits: sample(TRAITS, 3, random),
+    goal: {
+      ...goal,
+      priority: 55 + Math.floor(random() * 41),
+      progress: 0,
+    },
+  });
+  worldState.characters.push(character);
+  validateWorldState(worldState);
+  return character;
 }
 
 function generateInitialConflicts(worldState) {

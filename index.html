@@ -16,6 +16,15 @@
         <p class="eyebrow">Juoni- ja tehtävägeneraattori</p>
       </header>
 
+      <nav class="tab-list" aria-label="Päänäkymät" role="tablist">
+        <button class="tab-button is-active" type="button" role="tab" aria-selected="true" data-tab-target="overview">Yhteenveto</button>
+        <button class="tab-button" type="button" role="tab" aria-selected="false" data-tab-target="locations">Lokaatiot</button>
+        <button class="tab-button" type="button" role="tab" aria-selected="false" data-tab-target="guilds">Killat</button>
+        <button class="tab-button" type="button" role="tab" aria-selected="false" data-tab-target="people">Hahmot</button>
+      </nav>
+
+      <section id="panel-overview" class="tab-panel" role="tabpanel" data-tab-panel="overview">
+
       <section class="status-card" aria-labelledby="world-heading">
         <div>
           <p class="label">Maailman tila</p>
@@ -85,6 +94,33 @@
           <h2 id="quests-heading">Aktiiviset tehtävät</h2>
         </div>
         <div id="quest-summary" class="quest-list"></div>
+      </section>
+      </section>
+
+      <section id="panel-locations" class="tab-panel" role="tabpanel" data-tab-panel="locations" hidden>
+        <div class="page-heading">
+          <p class="label">Lokaatiot</p>
+          <h2>Ketkä ovat missäkin?</h2>
+        </div>
+        <div id="location-directory" class="directory-grid"></div>
+      </section>
+
+      <section id="panel-guilds" class="tab-panel" role="tabpanel" data-tab-panel="guilds" hidden>
+        <div class="page-heading">
+          <p class="label">Killat ja ryhmät</p>
+          <h2>Jäsenyydet</h2>
+        </div>
+        <div id="guild-directory" class="directory-grid"></div>
+      </section>
+
+      <section id="panel-people" class="tab-panel people-layout" role="tabpanel" data-tab-panel="people" hidden>
+        <aside class="people-index" aria-labelledby="people-heading">
+          <p class="label">Hahmot</p>
+          <h2 id="people-heading">Henkilöt</h2>
+          <button id="add-character" class="primary-button add-character-button" type="button">＋ Uusi henkilö</button>
+          <nav id="people-directory" class="people-links" aria-label="Henkilöt"></nav>
+        </aside>
+        <article id="person-detail" class="person-detail" aria-live="polite"></article>
       </section>
     </main>
 

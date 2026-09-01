@@ -3,8 +3,9 @@ import { createStoryEngine } from "./story-engine.js";
 import { createTextGenerator } from "./text-generator.js";
 import { createStorage } from "./storage.js";
 import { createUi } from "./ui.js";
-import { generateWorld } from "./world-generator.js";
+import { generateNewcomer, generateWorld } from "./world-generator.js";
 import { createQuestEngine } from "./quest-engine.js";
+import { updateCharacterIdentity } from "./world-state.js";
 
 function startApp() {
   const storage = createStorage();
@@ -48,6 +49,19 @@ function startApp() {
     app.questEngine.formQuests(app.worldState, situations);
     app.ui.renderWorldSummary(app.worldState);
     app.ui.setStatus(`Tehtävä ratkaistu: ${quest.title}`);
+  });
+  app.ui.bindCharacterUpdate((characterId, identity) => {
+    const character = updateCharacterIdentity(app.worldState, characterId, identity);
+    const situations = app.storyEngine.findSituations(app.worldState);
+    app.questEngine.formQuests(app.worldState, situations);
+    app.ui.renderWorldSummary(app.worldState);
+    app.ui.setStatus(`Hahmo nimetty uudelleen: ${character.name}`);
+  });
+  app.ui.bindCharacterCreation(() => {
+    const character = generateNewcomer(app.worldState);
+    app.ui.renderWorldSummary(app.worldState);
+    app.ui.showPerson(character.id);
+    app.ui.setStatus(`Uusi henkilö saapui kylään: ${character.name}`);
   });
 }
 

@@ -1,3 +1,5 @@
+import { PROFESSIONS } from "./professions/index.js";
+
 /**
  * Vastaa DOM-päivityksistä ja käyttöliittymän tapahtumista.
  */
@@ -22,6 +24,29 @@ export function createUi(document) {
   const generateSituationButton = document.querySelector("#generate-situation");
   const questCountElement = document.querySelector("#quest-count");
   const questsElement = document.querySelector("#quest-summary");
+  const tabButtons = [...document.querySelectorAll("[data-tab-target]")];
+  const tabPanels = [...document.querySelectorAll("[data-tab-panel]")];
+  const locationDirectory = document.querySelector("#location-directory");
+  const guildDirectory = document.querySelector("#guild-directory");
+  const peopleDirectory = document.querySelector("#people-directory");
+  const personDetail = document.querySelector("#person-detail");
+  const addCharacterButton = document.querySelector("#add-character");
+  let currentWorldState = null;
+  let selectedPersonId = null;
+
+  for (const button of tabButtons) {
+    button.addEventListener("click", () => activateTab(button.dataset.tabTarget));
+  }
+
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest?.("a[data-person-id]");
+    if (!link || !currentWorldState) return;
+    event.preventDefault();
+    selectedPersonId = link.dataset.personId;
+    activateTab("people");
+    renderPersonDetail(personDetail, currentWorldState, selectedPersonId);
+    updateSelectedPersonLinks(document, selectedPersonId);
+  });
 
   return {
     setStatus(message) {
@@ -45,7 +70,41 @@ export function createUi(document) {
       });
     },
 
+    bindCharacterUpdate(handler) {
+      personDetail?.addEventListener("submit", (event) => {
+        const form = event.target.closest?.("form[data-character-id]");
+        if (!form) return;
+        event.preventDefault();
+        const aliases = form.elements.aliases.value
+          .split(",")
+          .map((alias) => alias.trim())
+          .filter(Boolean);
+        handler(form.dataset.characterId, {
+          firstName: form.elements.firstName.value.trim(),
+          lastName: form.elements.lastName.value.trim(),
+          race: form.elements.race.value.trim(),
+          aliases,
+          professionId: form.elements.professionId.value,
+        });
+      });
+    },
+
+    bindCharacterCreation(handler) {
+      addCharacterButton?.addEventListener("click", handler);
+    },
+
+    showPerson(personId) {
+      if (!currentWorldState) return;
+      selectedPersonId = personId;
+      activateTab("people");
+      renderPeopleDirectory(peopleDirectory, currentWorldState, selectedPersonId);
+      renderPersonDetail(personDetail, currentWorldState, selectedPersonId);
+      updateSelectedPersonLinks(document, selectedPersonId);
+    },
+
     renderWorldSummary(worldState) {
+      currentWorldState = worldState;
+      selectedPersonId ??= worldState.characters[0]?.id ?? null;
       if (headingElement) {
         headingElement.textContent = `Päivä ${worldState.day} — pieni maailma herää`;
       }
@@ -132,8 +191,21 @@ export function createUi(document) {
         },
       );
       renderQuestCards(questsElement, worldState.activeQuests);
+      renderLocationDirectory(locationDirectory, worldState);
+      renderGuildDirectory(guildDirectory, worldState);
+      renderPeopleDirectory(peopleDirectory, worldState, selectedPersonId);
+      renderPersonDetail(personDetail, worldState, selectedPersonId);
     },
   };
+
+  function activateTab(tabName) {
+    for (const panel of tabPanels) panel.hidden = panel.dataset.tabPanel !== tabName;
+    for (const button of tabButtons) {
+      const selected = button.dataset.tabTarget === tabName;
+      button.classList.toggle("is-active", selected);
+      button.setAttribute("aria-selected", String(selected));
+    }
+  }
 }
 
 function renderSummaryList(element, items, formatItem) {
@@ -180,4 +252,248 @@ function renderQuestCards(element, quests) {
 
 function signed(value) {
   return value > 0 ? `+${value}` : `${value}`;
+}
+
+function renderLocationDirectory(element, worldState) {
+  if (!element) return;
+  element.replaceChildren(
+    ...worldState.locations.map((location) => {
+      const people = worldState.characters.filter(({ locationId }) => locationId === location.id);
+      return directoryCard(
+        element.ownerDocument,
+        location.name,
+        `${location.description} Turvallisuus ${location.safety}/100.`,
+        people,
+        "Ei hahmoja tässä lokaatiossa.",
+      );
+    }),
+  );
+}
+
+function renderGuildDirectory(element, worldState) {
+  if (!element) return;
+  element.replaceChildren(
+    ...worldState.factions.map((faction) => {
+      const members = worldState.characters.filter(({ factionIds }) => factionIds.includes(faction.id));
+      return directoryCard(
+        element.ownerDocument,
+        faction.name,
+        `${faction.description} Tavoite: ${faction.goal?.label ?? "ei tavoitetta"}.`,
+        members,
+        "Ei tunnettuja jäseniä.",
+      );
+    }),
+  );
+}
+
+function directoryCard(document, titleText, descriptionText, people, emptyText) {
+  const card = document.createElement("article");
+  card.className = "directory-card";
+  const title = document.createElement("h3");
+  title.textContent = titleText;
+  const description = document.createElement("p");
+  description.textContent = descriptionText;
+  const list = document.createElement("ul");
+  list.className = "linked-list";
+  if (people.length === 0) {
+    const empty = document.createElement("li");
+    empty.className = "muted";
+    empty.textContent = emptyText;
+    list.append(empty);
+  } else {
+    for (const person of people) {
+      const item = document.createElement("li");
+      item.append(createPersonLink(document, person));
+      list.append(item);
+    }
+  }
+  card.append(title, description, list);
+  return card;
+}
+
+function renderPeopleDirectory(element, worldState, selectedPersonId) {
+  if (!element) return;
+  element.replaceChildren(
+    ...worldState.characters.map((person) => createPersonLink(element.ownerDocument, person)),
+  );
+  updateSelectedPersonLinks(element.ownerDocument, selectedPersonId);
+}
+
+function createPersonLink(document, person) {
+  const link = document.createElement("a");
+  link.className = "person-link";
+  link.href = `#person-${person.id}`;
+  link.dataset.personId = person.id;
+  link.textContent = `${person.name} · ${person.role}`;
+  return link;
+}
+
+function updateSelectedPersonLinks(document, selectedPersonId) {
+  for (const link of document.querySelectorAll("a[data-person-id]")) {
+    link.classList.toggle("is-selected", link.dataset.personId === selectedPersonId);
+  }
+}
+
+function renderPersonDetail(element, worldState, personId) {
+  if (!element) return;
+  const person = worldState.characters.find(({ id }) => id === personId);
+  if (!person) {
+    element.replaceChildren();
+    return;
+  }
+  const entities = new Map(
+    [...worldState.characters, ...worldState.locations, ...worldState.factions]
+      .map((entity) => [entity.id, entity]),
+  );
+  const location = entities.get(person.locationId);
+  const guilds = person.factionIds.map((id) => entities.get(id)?.name).filter(Boolean);
+  const profession = PROFESSIONS.find(({ id }) => id === person.professionId);
+  const relations = worldState.relations
+    .filter(({ sourceId, targetId }) => sourceId === person.id || targetId === person.id)
+    .sort((left, right) => Math.abs(right.value) - Math.abs(left.value))
+    .map((relation) => {
+      const otherId = relation.sourceId === person.id ? relation.targetId : relation.sourceId;
+      const direction = relation.sourceId === person.id ? "→" : "←";
+      return relationRow(element.ownerDocument, entities.get(otherId), direction, relation);
+    });
+  const memories = worldState.memories
+    .filter(({ ownerId }) => ownerId === person.id)
+    .map((memory) => `${memory.reason} Voimakkuus ${memory.strength}/100.`);
+  const knowledge = worldState.knowledge
+    .filter(({ knowerId }) => knowerId === person.id)
+    .map((fact) => {
+      const event = worldState.events.find(({ id }) => id === fact.eventId);
+      return fact.type === "witnessKnown"
+        ? `Tietää, että ${entities.get(fact.subjectId)?.name ?? "joku"} todisti tapahtuman: ${event?.summary ?? "tuntematon tapahtuma"}`
+        : `Tietää tapahtumasta: ${event?.summary ?? "tuntematon tapahtuma"}`;
+    });
+  const debts = worldState.debts
+    .filter(({ debtorId, creditorId }) => debtorId === person.id || creditorId === person.id)
+    .map((debt) => debt.description);
+  const conflicts = worldState.conflicts
+    .filter(({ partyIds, status }) => status === "unresolved" && partyIds.includes(person.id))
+    .map((conflict) => `${conflict.reason} Kiireellisyys ${conflict.urgency}/100.`);
+
+  const heading = element.ownerDocument.createElement("header");
+  heading.className = "person-heading";
+  const eyebrow = element.ownerDocument.createElement("p");
+  eyebrow.className = "label";
+  eyebrow.textContent = person.role;
+  const title = element.ownerDocument.createElement("h2");
+  title.id = `person-${person.id}`;
+  title.textContent = person.name;
+  const meta = element.ownerDocument.createElement("p");
+  meta.className = "person-meta";
+  meta.textContent = `${person.race} · ${location?.name ?? "Ei sijaintia"} · ${guilds.join(", ") || "Ei kiltaa"}`;
+  heading.append(eyebrow, title, meta);
+
+  element.replaceChildren(
+    heading,
+    identityForm(element.ownerDocument, person),
+    statusBlock(element.ownerDocument, "Ammatti", [profession?.describe() ?? person.role]),
+    statusBlock(element.ownerDocument, "Lisänimet ja aliakset", person.aliases),
+    statusBlock(element.ownerDocument, "Ominaisuudet", person.traits),
+    statusBlock(element.ownerDocument, "Tavoite", [
+      `${person.goal.label} — eteneminen ${person.goal.progress}/100, prioriteetti ${person.goal.priority}/100`,
+    ]),
+    statusBlock(element.ownerDocument, "Suhteet", relations, true),
+    statusBlock(element.ownerDocument, "Muistot", memories),
+    statusBlock(element.ownerDocument, "Tiedot", knowledge),
+    statusBlock(element.ownerDocument, "Velat", debts),
+    statusBlock(element.ownerDocument, "Aktiiviset konfliktit", conflicts),
+  );
+}
+
+function identityForm(document, person) {
+  const details = document.createElement("details");
+  details.className = "identity-editor";
+  const summary = document.createElement("summary");
+  summary.textContent = "✎ Muokkaa identiteettiä";
+  const form = document.createElement("form");
+  form.className = "identity-form";
+  form.dataset.characterId = person.id;
+  const fields = document.createElement("div");
+  fields.className = "identity-fields";
+  fields.append(
+    identityField(document, "Etunimi", "firstName", person.firstName, true),
+    identityField(document, "Sukunimi", "lastName", person.lastName, true),
+    identityField(document, "Rotu", "race", person.race, true),
+    identityField(document, "Lisänimet pilkuilla", "aliases", person.aliases.join(", "), false),
+    professionField(document, person.professionId),
+  );
+  const submit = document.createElement("button");
+  submit.type = "submit";
+  submit.className = "primary-button";
+  submit.textContent = "Tallenna identiteetti";
+  form.append(fields, submit);
+  details.append(summary, form);
+  return details;
+}
+
+function identityField(document, labelText, name, value, required) {
+  const label = document.createElement("label");
+  label.className = "identity-field";
+  const text = document.createElement("span");
+  text.textContent = labelText;
+  const input = document.createElement("input");
+  input.type = "text";
+  input.name = name;
+  input.value = value;
+  input.required = required;
+  input.autocomplete = "off";
+  label.append(text, input);
+  return label;
+}
+
+function professionField(document, selectedProfessionId) {
+  const label = document.createElement("label");
+  label.className = "identity-field";
+  const text = document.createElement("span");
+  text.textContent = "Ammatti";
+  const select = document.createElement("select");
+  select.name = "professionId";
+  for (const profession of PROFESSIONS) {
+    const option = document.createElement("option");
+    option.value = profession.id;
+    option.textContent = profession.name;
+    option.title = profession.description;
+    option.selected = profession.id === selectedProfessionId;
+    select.append(option);
+  }
+  label.append(text, select);
+  return label;
+}
+
+function relationRow(document, other, direction, relation) {
+  const fragment = document.createDocumentFragment();
+  if (other && "role" in other) fragment.append(createPersonLink(document, other));
+  else fragment.append(document.createTextNode(other?.name ?? "Tuntematon"));
+  fragment.append(document.createTextNode(
+    ` ${direction} ${signed(relation.value)} — ${relation.reason}`,
+  ));
+  return fragment;
+}
+
+function statusBlock(document, titleText, items, nodes = false) {
+  const section = document.createElement("section");
+  section.className = "status-block";
+  const title = document.createElement("h3");
+  title.textContent = titleText;
+  const list = document.createElement("ul");
+  list.className = "linked-list";
+  if (items.length === 0) {
+    const item = document.createElement("li");
+    item.className = "muted";
+    item.textContent = "Ei tietoja.";
+    list.append(item);
+  } else {
+    for (const value of items) {
+      const item = document.createElement("li");
+      if (nodes) item.append(value);
+      else item.textContent = value;
+      list.append(item);
+    }
+  }
+  section.append(title, list);
+  return section;
 }

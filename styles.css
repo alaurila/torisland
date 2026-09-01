@@ -136,6 +136,47 @@ h2 {
   white-space: nowrap;
 }
 
+.tab-list {
+  display: flex;
+  gap: 0.35rem;
+  margin: 0.65rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #34433f;
+  overflow-x: auto;
+}
+
+.tab-button {
+  padding: 0.55rem 0.8rem;
+  border: 0;
+  border-radius: 0.55rem;
+  color: #9daaa5;
+  background: transparent;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tab-button:hover,
+.tab-button.is-active {
+  color: #f7f1e3;
+  background: #283633;
+}
+
+.tab-button.is-active {
+  box-shadow: inset 0 -2px #d99b65;
+}
+
+.tab-panel[hidden] {
+  display: none;
+}
+
+.page-heading {
+  margin-bottom: 1rem;
+  padding: 1rem 0 0.25rem;
+}
+
 .module-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -209,6 +250,181 @@ h2 {
   gap: 0.5rem;
 }
 
+.directory-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.directory-card,
+.people-index,
+.person-detail {
+  padding: 1.25rem;
+  border: 1px solid #34433f;
+  border-radius: 1rem;
+  background: rgb(28 38 37 / 76%);
+}
+
+.directory-card h3,
+.status-block h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.directory-card p,
+.person-meta {
+  color: #9daaa5;
+  line-height: 1.5;
+}
+
+.linked-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.person-link {
+  color: #e6b17f;
+  text-decoration-color: rgb(230 177 127 / 35%);
+  text-underline-offset: 0.2em;
+}
+
+.person-link:hover,
+.person-link.is-selected {
+  color: #ffd2a7;
+  text-decoration-color: currentColor;
+}
+
+.muted {
+  color: #77847f;
+}
+
+.people-layout {
+  display: grid;
+  grid-template-columns: minmax(12rem, 16rem) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.people-index {
+  align-self: start;
+  position: sticky;
+  top: 1rem;
+}
+
+.people-links {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.add-character-button {
+  width: 100%;
+  margin: 0.25rem 0 0.8rem;
+}
+
+.people-links .person-link {
+  padding: 0.5rem 0.6rem;
+  border-radius: 0.45rem;
+  text-decoration: none;
+}
+
+.people-links .person-link.is-selected {
+  background: #30403c;
+}
+
+.person-heading {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #34433f;
+}
+
+.person-heading h2 {
+  margin-bottom: 0.35rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 500;
+}
+
+.person-heading .label {
+  margin-bottom: 0.4rem;
+}
+
+.person-meta {
+  margin-bottom: 0;
+}
+
+.identity-editor {
+  margin-top: 1rem;
+  border: 1px solid #465650;
+  border-radius: 0.8rem;
+  background: #141d1b;
+}
+
+.identity-editor summary {
+  padding: 0.8rem 1rem;
+  color: #d7e0dc;
+  font-size: 0.9rem;
+  font-weight: 750;
+  cursor: pointer;
+  user-select: none;
+}
+
+.identity-editor summary:hover {
+  color: #ffd2a7;
+}
+
+.identity-editor[open] summary {
+  border-bottom: 1px solid #465650;
+}
+
+.identity-form {
+  margin: 0;
+  padding: 1rem;
+}
+
+.identity-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.8rem;
+}
+
+.identity-field {
+  display: grid;
+  gap: 0.35rem;
+  color: #9daaa5;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.identity-field input,
+.identity-field select {
+  width: 100%;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid #465650;
+  border-radius: 0.55rem;
+  color: #f7f1e3;
+  background: #202b29;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.identity-field input:focus,
+.identity-field select:focus {
+  border-color: #d99b65;
+  outline: 3px solid rgb(217 155 101 / 20%);
+}
+
+.status-block {
+  padding: 1rem 0;
+  border-bottom: 1px solid #2b3936;
+}
+
+.status-block:last-child {
+  border-bottom: 0;
+}
+
 @media (max-width: 42rem) {
   .status-card {
     align-items: flex-start;
@@ -226,5 +442,18 @@ h2 {
 
   .quest-list {
     grid-template-columns: 1fr;
+  }
+
+  .directory-grid,
+  .people-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .identity-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .people-index {
+    position: static;
   }
 }

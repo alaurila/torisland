@@ -8,6 +8,7 @@ import {
   createId,
   validateWorldState,
 } from "./validation.js";
+import { getProfession } from "./professions/index.js";
 
 /**
  * Luo uuden, JSON-muotoon serialisoitavan maailmantilan.
@@ -45,16 +46,24 @@ export function createWorldState({ day = 1 } = {}) {
  */
 export function createCharacter({
   id = createId("character"),
-  name,
-  role,
+  firstName,
+  lastName,
+  race,
+  aliases = [],
+  professionId,
   locationId = null,
   factionIds = [],
   traits = [],
   goal = null,
 } = {}) {
   assertString(id, "character.id");
-  assertString(name, "character.name");
-  assertString(role, "character.role");
+  assertString(firstName, "character.firstName");
+  assertString(lastName, "character.lastName");
+  assertString(race, "character.race");
+  assertStringArray(aliases, "character.aliases");
+  assertString(professionId, "character.professionId");
+  const profession = getProfession(professionId);
+  if (!profession) throw new Error(`Tuntematon ammatti "${professionId}".`);
   assertOptionalId(locationId, "character.locationId");
   assertStringArray(factionIds, "character.factionIds");
   assertStringArray(traits, "character.traits", { length: 3 });
@@ -62,13 +71,46 @@ export function createCharacter({
 
   return {
     id,
-    name,
-    role,
+    firstName,
+    lastName,
+    name: `${firstName.trim()} ${lastName.trim()}`,
+    race,
+    aliases: [...new Set(aliases.map((alias) => alias.trim()))],
+    professionId,
+    role: profession.name,
     locationId,
     factionIds: [...factionIds],
     traits: [...traits],
     goal: { progress: 0, ...goal },
   };
+}
+
+/** Päivittää hahmon nykyisen identiteetin muuttamatta tapahtumahistoriaa. */
+export function updateCharacterIdentity(
+  worldState,
+  characterId,
+  { firstName, lastName, race, aliases = [], professionId },
+) {
+  assertString(characterId, "characterId");
+  assertString(firstName, "character.firstName");
+  assertString(lastName, "character.lastName");
+  assertString(race, "character.race");
+  assertStringArray(aliases, "character.aliases");
+  assertString(professionId, "character.professionId");
+  const profession = getProfession(professionId);
+  if (!profession) throw new Error(`Tuntematon ammatti "${professionId}".`);
+  const character = worldState.characters.find(({ id }) => id === characterId);
+  if (!character) throw new Error(`Hahmoa ${characterId} ei löytynyt.`);
+
+  character.firstName = firstName.trim();
+  character.lastName = lastName.trim();
+  character.name = `${character.firstName} ${character.lastName}`;
+  character.race = race.trim();
+  character.aliases = [...new Set(aliases.map((alias) => alias.trim()))];
+  character.professionId = profession.id;
+  character.role = profession.name;
+  validateWorldState(worldState);
+  return character;
 }
 
 /**
