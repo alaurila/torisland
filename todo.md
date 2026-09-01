@@ -104,19 +104,19 @@
 
 9. Tehtävien muodostaminen
 
-9.1 [ ] Määritä tehtävätemplaten tyyppi, vaatimukset, osallistujat ja tekstipohja.
+9.1 [x] Määritä tehtävätemplaten tyyppi, vaatimukset, osallistujat ja tekstipohja.
 
-9.2 [ ] Luo vähintään 10 tehtävätemplatea.
+9.2 [x] Luo vähintään 10 tehtävätemplatea.
 
-9.3 [ ] Muunna havaittu tilanne pelaajalle esitettäväksi tehtäväksi.
+9.3 [x] Muunna havaittu tilanne pelaajalle esitettäväksi tehtäväksi.
 
-9.4 [ ] Tarjoa yhdestä tilanteesta useita toimintatapoja, kuten auttaminen, sovittelu, resurssin hankinta, salaisuuden paljastaminen tai rikoksen peittäminen.
+9.4 [x] Tarjoa yhdestä tilanteesta useita toimintatapoja, kuten auttaminen, sovittelu, resurssin hankinta, salaisuuden paljastaminen tai rikoksen peittäminen.
 
-9.5 [ ] Toteuta paikkamerkkien, kuten `{giver}` ja `{target}`, täyttäminen maailman tiedoilla.
+9.5 [x] Toteuta paikkamerkkien, kuten `{giver}` ja `{target}`, täyttäminen maailman tiedoilla.
 
-9.6 [ ] Toteuta tehtävän ratkaisun vaikutukset tapahtumiin, muistoihin, suhteisiin ja konflikteihin.
+9.6 [x] Toteuta tehtävän ratkaisun vaikutukset tapahtumiin, muistoihin, suhteisiin ja konflikteihin.
 
-9.7 [ ] Siirrä ratkaistu tehtävä aktiivisista tilanteista suoritettujen tehtävien historiaan.
+9.7 [x] Siirrä ratkaistu tehtävä aktiivisista tilanteista suoritettujen tehtävien historiaan.
 
 10. Jatkuva maailman simulaatio
 
@@ -144,19 +144,19 @@
 
 12. Käyttöliittymä
 
-12.1 [ ] Toteuta World-näkymä, joka näyttää päivän ja maailman tärkeimmän nykytilan.
+12.1 [x] Toteuta World-näkymä, joka näyttää päivän ja maailman tärkeimmän nykytilan.
 
-12.2 [ ] Toteuta Characters-näkymä, joka näyttää hahmot ja heidän tärkeimmät suhteensa.
+12.2 [x] Toteuta Characters-näkymä, joka näyttää hahmot ja heidän tärkeimmät suhteensa.
 
-12.3 [ ] Toteuta Story feed -näkymä tapahtumahistorialle.
+12.3 [x] Toteuta Story feed -näkymä tapahtumahistorialle.
 
-12.4 [ ] Lisää painike uuden tilanteen generoimiseen.
+12.4 [x] Lisää painike uuden tilanteen generoimiseen.
 
-12.5 [ ] Näytä generoitu tilanne, sen osapuolet ja mahdolliset tehtäväratkaisut.
+12.5 [x] Näytä generoitu tilanne, sen osapuolet ja mahdolliset tehtäväratkaisut.
 
-12.6 [ ] Näytä kehitystilassa tilanteen generoinnin perustelut ja käytetyt suhdearvot.
+12.6 [x] Näytä kehitystilassa tilanteen generoinnin perustelut ja käytetyt suhdearvot.
 
-12.7 [ ] Lisää käyttöliittymään päivän eteneminen sekä tallennuksen tila.
+12.7 [x] Lisää käyttöliittymään päivän eteneminen sekä tallennuksen tila.
 
 13. Testaus ja viimeistely
 

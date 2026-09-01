@@ -41,6 +41,7 @@ js/conflicts.js            Konfliktimalli ja alkumaailman tarkistus
 js/events.js               Tapahtumamalli, templatet ja tapahtumageneraattori
 js/consequences.js         Tapahtumien seuraukset, muistot ja tieto
 js/story-engine.js         Jännitteiden laskenta ja tilanteiden tunnistaminen
+js/quest-engine.js         Tehtävätemplatet, muodostaminen ja ratkaiseminen
 js/world-simulation.js     Maailman eteneminen ja tapahtumien seuraukset
 js/story-engine.js         Jännitteiden ja tarinatilanteiden tunnistaminen
 js/text-generator.js       Rakenteisen datan esittäminen tekstinä

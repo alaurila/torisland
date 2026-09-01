@@ -24,6 +24,8 @@
         <div class="status-actions">
           <span id="app-status" class="status" role="status">Käynnistetään…</span>
           <button id="advance-day" class="primary-button" type="button">Etene päivä</button>
+          <button id="generate-situation" class="secondary-button" type="button">Generoi tilanteet</button>
+          <span id="storage-status" class="storage-status">Tallennus ei käytössä</span>
         </div>
       </section>
 
@@ -75,6 +77,14 @@
           <h2 id="situations-heading">Narratiivisesti kiinnostavat tilanteet</h2>
         </div>
         <ul id="situation-summary" class="summary-list"></ul>
+      </section>
+
+      <section class="relations-card" aria-labelledby="quests-heading">
+        <div>
+          <p id="quest-count" class="label">Tehtävät</p>
+          <h2 id="quests-heading">Aktiiviset tehtävät</h2>
+        </div>
+        <div id="quest-summary" class="quest-list"></div>
       </section>
     </main>
 

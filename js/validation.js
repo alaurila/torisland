@@ -290,6 +290,19 @@ export function validateWorldState(worldState) {
     }
   }
 
+  for (const quest of worldState.activeQuests) {
+    validateQuest(quest, actorIds, locationIds, "active");
+    if (quest.resolution !== null) {
+      throw new Error(`Aktiivisella tehtävällä ${quest.id} ei saa olla ratkaisua.`);
+    }
+  }
+
+  for (const quest of worldState.completedQuests) {
+    validateQuest(quest, actorIds, locationIds, "completed");
+    assertObject(quest.resolution, `Tehtävän ${quest.id} resolution`);
+    assertReference(quest.resolution.eventId, eventIds, `Tehtävän ${quest.id} resolution.eventId`, false);
+  }
+
   try {
     JSON.stringify(worldState);
   } catch (error) {
@@ -304,5 +317,35 @@ function assertReference(value, allowedIds, fieldName, nullable = true) {
   assertString(value, fieldName);
   if (!allowedIds.has(value)) {
     throw new Error(`${fieldName} viittaa tuntemattomaan tunnisteeseen "${value}".`);
+  }
+}
+
+function validateQuest(quest, actorIds, locationIds, expectedStatus) {
+  assertString(quest.type, `Tehtävän ${quest.id} type`);
+  assertString(quest.title, `Tehtävän ${quest.id} title`);
+  assertString(quest.description, `Tehtävän ${quest.id} description`);
+  assertReference(quest.giverId, actorIds, `Tehtävän ${quest.id} giverId`, false);
+  assertReference(quest.targetId, actorIds, `Tehtävän ${quest.id} targetId`, false);
+  assertReference(quest.locationId, locationIds, `Tehtävän ${quest.id} locationId`, false);
+  assertString(quest.situationId, `Tehtävän ${quest.id} situationId`);
+  assertString(quest.situationSignature, `Tehtävän ${quest.id} situationSignature`);
+  assertString(quest.templateId, `Tehtävän ${quest.id} templateId`);
+  if (!Array.isArray(quest.actions) || quest.actions.length < 3) {
+    throw new Error(`Tehtävällä ${quest.id} pitää olla vähintään kolme toimintatapaa.`);
+  }
+  const actionIds = new Set();
+  for (const action of quest.actions) {
+    assertString(action.id, `Tehtävän ${quest.id} action.id`);
+    assertString(action.label, `Tehtävän ${quest.id} action.label`);
+    assertString(action.eventType, `Tehtävän ${quest.id} action.eventType`);
+    assertString(action.summary, `Tehtävän ${quest.id} action.summary`);
+    if (actionIds.has(action.id)) throw new Error(`Tehtävän ${quest.id} toiminnon tunniste toistuu.`);
+    actionIds.add(action.id);
+  }
+  if (quest.status !== expectedStatus) {
+    throw new Error(`Tehtävän ${quest.id} tilan pitäisi olla ${expectedStatus}.`);
+  }
+  if (!Number.isInteger(quest.createdDay) || quest.createdDay < 1) {
+    throw new Error(`Tehtävän ${quest.id} createdDay pitää olla positiivinen kokonaisluku.`);
   }
 }

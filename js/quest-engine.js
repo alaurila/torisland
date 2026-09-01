@@ -55,18 +55,17 @@ export function createQuestEngine({ maxActiveQuests = MAX_ACTIVE_QUESTS } = {}) 
       const completedSignatures = new Set(
         worldState.completedQuests.map(({ situationSignature }) => situationSignature),
       );
-      const quests = [];
+      const quests = [...worldState.activeQuests].slice(0, maxActiveQuests);
 
       for (const situation of situations) {
-        if (quests.length >= maxActiveQuests) break;
         const signature = situationSignature(situation);
         if (completedSignatures.has(signature)) continue;
         const existing = activeBySignature.get(signature);
         if (existing) {
           existing.situationId = situation.id;
-          quests.push(existing);
           continue;
         }
+        if (quests.length >= maxActiveQuests) continue;
         const template = QUEST_TEMPLATES.find((candidate) => isQuestTemplateEligible(candidate, situation));
         if (template) quests.push(createQuest(worldState, situation, template));
       }
