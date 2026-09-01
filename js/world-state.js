@@ -26,6 +26,7 @@ export function createWorldState({ day = 1 } = {}) {
     resources: [],
     secrets: [],
     debts: [],
+    conflicts: [],
     memories: [],
     knowledge: [],
     events: [],

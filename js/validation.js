@@ -7,6 +7,7 @@ const WORLD_COLLECTIONS = [
   "resources",
   "secrets",
   "debts",
+  "conflicts",
   "memories",
   "knowledge",
   "events",
@@ -167,6 +168,29 @@ export function validateWorldState(worldState) {
     assertReference(debt.creditorId, actorIds, `Velan ${debt.id} creditorId`, false);
     if (debt.debtorId === debt.creditorId) {
       throw new Error(`Velan ${debt.id} velallinen ja velkoja eivät voi olla sama osapuoli.`);
+    }
+  }
+
+  for (const conflict of worldState.conflicts) {
+    assertString(conflict.type, `Konfliktin ${conflict.id} type`);
+    assertStringArray(conflict.partyIds, `Konfliktin ${conflict.id} partyIds`);
+    if (conflict.partyIds.length < 2 || new Set(conflict.partyIds).size !== conflict.partyIds.length) {
+      throw new Error(`Konfliktilla ${conflict.id} pitää olla vähintään kaksi eri osapuolta.`);
+    }
+    for (const partyId of conflict.partyIds) {
+      assertReference(partyId, actorIds, `Konfliktin ${conflict.id} partyIds`, false);
+    }
+    assertString(conflict.reason, `Konfliktin ${conflict.id} reason`);
+    assertReference(conflict.locationId, locationIds, `Konfliktin ${conflict.id} locationId`, false);
+    assertNumber(conflict.urgency, `Konfliktin ${conflict.id} urgency`, { min: 0, max: 100 });
+    assertStringArray(conflict.sourceIds, `Konfliktin ${conflict.id} sourceIds`);
+    for (const sourceId of conflict.sourceIds) {
+      if (!ids.has(sourceId)) {
+        throw new Error(`Konfliktin ${conflict.id} lähde "${sourceId}" puuttuu maailmasta.`);
+      }
+    }
+    if (conflict.status !== "unresolved" && conflict.status !== "resolved") {
+      throw new Error(`Konfliktilla ${conflict.id} on tuntematon tila.`);
     }
   }
 

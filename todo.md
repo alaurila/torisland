@@ -52,15 +52,15 @@
 
 5. Alkutilanteen konfliktit
 
-5.1 [ ] Luo maailmaan vähintään yksi maksamaton velka tai toteutumaton lupaus.
+5.1 [x] Luo maailmaan vähintään yksi maksamaton velka tai toteutumaton lupaus.
 
-5.2 [ ] Luo vähintään yksi kadonnut resurssi, salainen rikos tai resurssipula.
+5.2 [x] Luo vähintään yksi kadonnut resurssi, salainen rikos tai resurssipula.
 
-5.3 [ ] Luo ryhmien tai hahmojen välille ristiriitaisia tavoitteita.
+5.3 [x] Luo ryhmien tai hahmojen välille ristiriitaisia tavoitteita.
 
-5.4 [ ] Varmista, että jokaisella konfliktilla on osapuolet, syy, sijainti ja ratkaisematon tila.
+5.4 [x] Varmista, että jokaisella konfliktilla on osapuolet, syy, sijainti ja ratkaisematon tila.
 
-5.5 [ ] Tarkista generoinnin jälkeen, että maailmassa on riittävästi aineksia ensimmäisiin tapahtumiin.
+5.5 [x] Tarkista generoinnin jälkeen, että maailmassa on riittävästi aineksia ensimmäisiin tapahtumiin.
 
 6. Tapahtumajärjestelmä
 

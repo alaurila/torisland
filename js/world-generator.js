@@ -3,10 +3,13 @@ import {
   createDebt,
   createFaction,
   createLocation,
+  createNeed,
+  createResource,
   createSecret,
   createWorldState,
 } from "./world-state.js";
 import { createRelation } from "./relations.js";
+import { assertWorldHasStorySeeds, createConflict } from "./conflicts.js";
 import { createId, validateWorldState } from "./validation.js";
 
 export const WORLD_LIMITS = Object.freeze({
@@ -170,9 +173,67 @@ export function generateWorld(
   });
 
   generateSharedHistory(worldState, random);
+  generateInitialConflicts(worldState);
 
   validateWorldState(worldState);
+  assertWorldHasStorySeeds(worldState);
   return worldState;
+}
+
+function generateInitialConflicts(worldState) {
+  const [debtor, creditor, investigator] = worldState.characters;
+  const [firstFaction, secondFaction] = worldState.factions;
+  const debt = worldState.debts[0];
+  const conflictLocation = worldState.locations.find(({ id }) => id === debtor.locationId);
+
+  worldState.conflicts.push(
+    createConflict({
+      type: "unpaidDebt",
+      partyIds: [debtor.id, creditor.id],
+      reason: debt.description,
+      locationId: conflictLocation.id,
+      urgency: 70,
+      sourceIds: [debt.id],
+    }),
+  );
+
+  const missingShipment = createResource({
+    name: "Kadonnut lääkelähetys",
+    type: "medicine",
+    quantity: 0,
+    ownerId: firstFaction.id,
+    locationId: conflictLocation.id,
+    scarce: true,
+  });
+  const medicineNeed = createNeed({
+    ownerId: investigator.id,
+    type: "medicine",
+    priority: 85,
+    resourceId: missingShipment.id,
+  });
+  worldState.resources.push(missingShipment);
+  worldState.needs.push(medicineNeed);
+  worldState.conflicts.push(
+    createConflict({
+      type: "missingResource",
+      partyIds: [investigator.id, firstFaction.id],
+      reason: `${investigator.name} tarvitsee lääkkeitä, mutta ryhmän ${firstFaction.name} lähetys on kadonnut.`,
+      locationId: conflictLocation.id,
+      urgency: 85,
+      sourceIds: [missingShipment.id, medicineNeed.id],
+    }),
+  );
+
+  worldState.conflicts.push(
+    createConflict({
+      type: "conflictingGoals",
+      partyIds: [firstFaction.id, secondFaction.id],
+      reason: `${firstFaction.name} haluaa ${firstFaction.goal.label}, mutta ${secondFaction.name} pyrkii ${secondFaction.goal.label}.`,
+      locationId: firstFaction.locationId,
+      urgency: 75,
+      sourceIds: [firstFaction.id, secondFaction.id],
+    }),
+  );
 }
 
 function generateSharedHistory(worldState, random) {

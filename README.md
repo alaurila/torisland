@@ -37,6 +37,7 @@ js/world-state.js          Serialisoitava maailmantila ja tietomallien tehtaat
 js/validation.js           Tietomallien validointi ja tunnisteiden luonti
 js/world-generator.js      Pienen maailman konfiguroitava generointi
 js/relations.js            Suhteiden luonti, lukeminen ja muuttaminen
+js/conflicts.js            Konfliktimalli ja alkumaailman tarkistus
 js/world-simulation.js     Maailman eteneminen ja tapahtumien seuraukset
 js/story-engine.js         Jännitteiden ja tarinatilanteiden tunnistaminen
 js/text-generator.js       Rakenteisen datan esittäminen tekstinä

@@ -7,18 +7,13 @@
       name="description"
       content="Pientä tarinamaailmaa simuloiva juoni- ja tehtävägeneraattori."
     />
-    <title>Tarinamaailma</title>
+    <title>Juoni- ja tehtävägeneraattori</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="app-shell">
       <header class="hero">
         <p class="eyebrow">Juoni- ja tehtävägeneraattori</p>
-        <h1>Tarinamaailma</h1>
-        <p class="lead">
-          Maailma, jossa hahmojen tavoitteet, suhteet ja muistot synnyttävät
-          uusia tapahtumia.
-        </p>
       </header>
 
       <section class="status-card" aria-labelledby="world-heading">
@@ -53,6 +48,14 @@
           <h2 id="relations-heading">Merkittävät suhteet</h2>
         </div>
         <ul id="relation-summary" class="summary-list"></ul>
+      </section>
+
+      <section class="relations-card" aria-labelledby="conflicts-heading">
+        <div>
+          <p id="conflict-count" class="label">Konfliktit</p>
+          <h2 id="conflicts-heading">Ratkaisemattomat ongelmat</h2>
+        </div>
+        <ul id="conflict-summary" class="summary-list"></ul>
       </section>
     </main>
 

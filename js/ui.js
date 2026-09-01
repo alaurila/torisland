@@ -12,6 +12,8 @@ export function createUi(document) {
   const factionCountElement = document.querySelector("#faction-count");
   const relationCountElement = document.querySelector("#relation-count");
   const relationsElement = document.querySelector("#relation-summary");
+  const conflictCountElement = document.querySelector("#conflict-count");
+  const conflictsElement = document.querySelector("#conflict-summary");
 
   return {
     setStatus(message) {
@@ -29,6 +31,10 @@ export function createUi(document) {
       setText(locationCountElement, `${worldState.locations.length} lokaatiota`);
       setText(factionCountElement, `${worldState.factions.length} ryhmää`);
       setText(relationCountElement, `${worldState.relations.length} suhdetta`);
+      const unresolvedConflicts = worldState.conflicts.filter(
+        ({ status }) => status === "unresolved",
+      );
+      setText(conflictCountElement, `${unresolvedConflicts.length} ratkaisematonta`);
 
       renderSummaryList(
         charactersElement,
@@ -52,6 +58,14 @@ export function createUi(document) {
           const target = entities.get(relation.targetId)?.name ?? "tuntematon";
           const value = relation.value > 0 ? `+${relation.value}` : relation.value;
           return `${source} → ${target}: ${value}. ${relation.reason}`;
+        },
+      );
+      renderSummaryList(
+        conflictsElement,
+        [...unresolvedConflicts].sort((left, right) => right.urgency - left.urgency),
+        (conflict) => {
+          const location = entities.get(conflict.locationId)?.name ?? "Tuntematon paikka";
+          return `${conflict.reason} Kiireellisyys ${conflict.urgency}/100 — ${location}`;
         },
       );
     },
