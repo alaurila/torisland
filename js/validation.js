@@ -110,6 +110,28 @@ export function validateWorldState(worldState) {
   const subjectIds = new Set([...actorIds, ...locationIds]);
   const resourceIds = new Set(worldState.resources.map(({ id }) => id));
 
+  for (const relation of worldState.relations) {
+    assertString(relation.sourceId, `Suhteen ${relation.id} sourceId`);
+    assertString(relation.targetId, `Suhteen ${relation.id} targetId`);
+    if (!subjectIds.has(relation.sourceId) || !subjectIds.has(relation.targetId)) {
+      throw new Error(`Suhde ${relation.id} viittaa tuntemattomaan entiteettiin.`);
+    }
+    if (relation.sourceId === relation.targetId) {
+      throw new Error(`Suhteen ${relation.id} osapuolet eivät voi olla samat.`);
+    }
+    assertNumber(relation.value, `Suhteen ${relation.id} value`, { min: -100, max: 100 });
+    assertString(relation.reason, `Suhteen ${relation.id} reason`);
+  }
+
+  const relationPairs = new Set();
+  for (const relation of worldState.relations) {
+    const pair = `${relation.sourceId}\u0000${relation.targetId}`;
+    if (relationPairs.has(pair)) {
+      throw new Error(`Suhde ${relation.sourceId} → ${relation.targetId} on määritelty useammin kuin kerran.`);
+    }
+    relationPairs.add(pair);
+  }
+
   for (const character of worldState.characters) {
     assertReference(character.locationId, locationIds, `Hahmon ${character.id} locationId`);
     for (const factionId of character.factionIds) {

@@ -106,6 +106,14 @@ h2 {
   background: rgb(17 24 24 / 58%);
 }
 
+.relations-card {
+  margin-top: 1rem;
+  padding: 1.5rem;
+  border: 1px solid #34433f;
+  border-radius: 1rem;
+  background: rgb(28 38 37 / 76%);
+}
+
 .module-grid p {
   margin-bottom: 0;
   color: #9daaa5;

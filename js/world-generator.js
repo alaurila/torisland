@@ -1,10 +1,13 @@
 import {
   createCharacter,
+  createDebt,
   createFaction,
   createLocation,
+  createSecret,
   createWorldState,
 } from "./world-state.js";
-import { validateWorldState } from "./validation.js";
+import { createRelation } from "./relations.js";
+import { createId, validateWorldState } from "./validation.js";
 
 export const WORLD_LIMITS = Object.freeze({
   characters: 10,
@@ -128,9 +131,9 @@ export function generateWorld(
   { characterCount = 6, locationCount = 3, factionCount = 2 } = {},
   random = Math.random,
 ) {
-  assertCount("characterCount", characterCount, 1, WORLD_LIMITS.characters);
+  assertCount("characterCount", characterCount, 4, WORLD_LIMITS.characters);
   assertCount("locationCount", locationCount, 1, WORLD_LIMITS.locations);
-  assertCount("factionCount", factionCount, 1, WORLD_LIMITS.factions);
+  assertCount("factionCount", factionCount, 2, WORLD_LIMITS.factions);
   if (typeof random !== "function") throw new TypeError("random pitää olla funktio.");
 
   const worldState = createWorldState();
@@ -166,8 +169,167 @@ export function generateWorld(
     });
   });
 
+  generateSharedHistory(worldState, random);
+
   validateWorldState(worldState);
   return worldState;
+}
+
+function generateSharedHistory(worldState, random) {
+  const [first, second, third, fourth] = worldState.characters;
+  const firstFaction = worldState.factions[0];
+  const secondFaction = worldState.factions[1] ?? firstFaction;
+
+  addHistoricalRelation(
+    worldState,
+    first,
+    second,
+    60,
+    `${second.name} pelasti ${first.name}n vanhan väijytyksen aikana.`,
+    "rescue",
+  );
+  addHistoricalRelation(
+    worldState,
+    second,
+    third,
+    -45,
+    `${third.name} epäonnistui ${second.name}n tärkeän lähetyksen suojelemisessa.`,
+    "failedProtection",
+  );
+  addHistoricalRelation(
+    worldState,
+    third,
+    fourth,
+    35,
+    `${fourth.name} piti ${third.name}n vaarallisen salaisuuden.`,
+    "keptSecret",
+  );
+
+  for (let index = 3; index < worldState.characters.length; index += 1) {
+    const source = worldState.characters[index];
+    const target = worldState.characters[(index + 1) % worldState.characters.length];
+    const positive = random() >= 0.5;
+    addHistoricalRelation(
+      worldState,
+      source,
+      target,
+      positive ? 25 + Math.floor(random() * 36) : -25 - Math.floor(random() * 36),
+      positive
+        ? `${target.name} auttoi ${source.name}a vaikeana aikana.`
+        : `${target.name} rikkoi ${source.name}lle antamansa lupauksen.`,
+      positive ? "assistance" : "brokenPromise",
+    );
+  }
+
+  for (const character of worldState.characters) {
+    const location = worldState.locations.find(({ id }) => id === character.locationId);
+    worldState.relations.push(
+      createRelation({
+        sourceId: character.id,
+        targetId: location.id,
+        value: 20,
+        reason: `${character.name} asuu tai työskentelee paikassa ${location.name}.`,
+      }),
+    );
+
+    for (const factionId of character.factionIds) {
+      const faction = worldState.factions.find(({ id }) => id === factionId);
+      worldState.relations.push(
+        createRelation({
+          sourceId: character.id,
+          targetId: faction.id,
+          value: 40 + Math.floor(random() * 31),
+          reason: `${character.name} kuuluu ryhmään ${faction.name}.`,
+        }),
+      );
+    }
+  }
+
+  for (const faction of worldState.factions) {
+    const location = worldState.locations.find(({ id }) => id === faction.locationId);
+    worldState.relations.push(
+      createRelation({
+        sourceId: faction.id,
+        targetId: location.id,
+        value: 55,
+        reason: `${faction.name} toimii paikassa ${location.name}.`,
+      }),
+    );
+  }
+
+  if (worldState.factions.length > 1) {
+    worldState.relations.push(
+      createRelation({
+        sourceId: firstFaction.id,
+        targetId: secondFaction.id,
+        value: -70,
+        reason: `${firstFaction.name} ja ${secondFaction.name} kilpailevat alueen hallinnasta.`,
+        dimensions: { trust: -65, respect: 20, fear: 30 },
+      }),
+    );
+  }
+
+  worldState.debts.push(
+    createDebt({
+      debtorId: first.id,
+      creditorId: second.id,
+      description: `${first.name} on ${second.name}lle henkensä velkaa.`,
+      amount: 80,
+    }),
+  );
+  worldState.secrets.push(
+    createSecret({
+      description: `${third.name} tietää ryhmän ${secondFaction.name} käyttämästä salareitistä.`,
+      subjectIds: [secondFaction.id],
+      knownByIds: [third.id],
+      importance: 75,
+    }),
+  );
+  worldState.events.push(
+    createHistoricalEvent({
+      type: "debtCreated",
+      actorId: second.id,
+      targetId: first.id,
+      locationId: first.locationId,
+      summary: `${second.name} pelasti ${first.name}n, ja heidän välilleen syntyi velka.`,
+    }),
+    createHistoricalEvent({
+      type: "secretDiscovered",
+      actorId: third.id,
+      targetId: secondFaction.id,
+      locationId: third.locationId,
+      summary: `${third.name} löysi ryhmän ${secondFaction.name} salaisen reitin.`,
+    }),
+  );
+}
+
+function addHistoricalRelation(worldState, source, target, value, reason, eventType) {
+  worldState.relations.push(
+    createRelation({ sourceId: source.id, targetId: target.id, value, reason }),
+  );
+  worldState.events.push(
+    createHistoricalEvent({
+      type: eventType,
+      actorId: target.id,
+      targetId: source.id,
+      locationId: source.locationId,
+      summary: reason,
+    }),
+  );
+}
+
+function createHistoricalEvent({ type, actorId, targetId, locationId, summary }) {
+  return {
+    id: createId("event"),
+    type,
+    actorId,
+    targetId,
+    locationId,
+    witnessIds: [],
+    day: 0,
+    summary,
+    historical: true,
+  };
 }
 
 function sample(values, count, random) {

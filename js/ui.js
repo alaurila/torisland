@@ -10,6 +10,8 @@ export function createUi(document) {
   const characterCountElement = document.querySelector("#character-count");
   const locationCountElement = document.querySelector("#location-count");
   const factionCountElement = document.querySelector("#faction-count");
+  const relationCountElement = document.querySelector("#relation-count");
+  const relationsElement = document.querySelector("#relation-summary");
 
   return {
     setStatus(message) {
@@ -26,6 +28,7 @@ export function createUi(document) {
       setText(characterCountElement, `${worldState.characters.length} hahmoa`);
       setText(locationCountElement, `${worldState.locations.length} lokaatiota`);
       setText(factionCountElement, `${worldState.factions.length} ryhmää`);
+      setText(relationCountElement, `${worldState.relations.length} suhdetta`);
 
       renderSummaryList(
         charactersElement,
@@ -34,6 +37,23 @@ export function createUi(document) {
       );
       renderSummaryList(locationsElement, worldState.locations, (location) => location.name);
       renderSummaryList(factionsElement, worldState.factions, (faction) => faction.name);
+      const entities = new Map(
+        [...worldState.characters, ...worldState.locations, ...worldState.factions].map(
+          (entity) => [entity.id, entity],
+        ),
+      );
+      renderSummaryList(
+        relationsElement,
+        [...worldState.relations]
+          .sort((left, right) => Math.abs(right.value) - Math.abs(left.value))
+          .slice(0, 6),
+        (relation) => {
+          const source = entities.get(relation.sourceId)?.name ?? "Tuntematon";
+          const target = entities.get(relation.targetId)?.name ?? "tuntematon";
+          const value = relation.value > 0 ? `+${relation.value}` : relation.value;
+          return `${source} → ${target}: ${value}. ${relation.reason}`;
+        },
+      );
     },
   };
 }

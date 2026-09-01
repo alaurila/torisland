@@ -38,17 +38,17 @@
 
 4. Suhteet ja yhteinen historia
 
-4.1 [ ] Toteuta suhteet asteikolla `-100...+100`.
+4.1 [x] Toteuta suhteet asteikolla `-100...+100`.
 
-4.2 [ ] Tue yhteyksiä hahmojen, ryhmien ja lokaatioiden välillä.
+4.2 [x] Tue yhteyksiä hahmojen, ryhmien ja lokaatioiden välillä.
 
-4.3 [ ] Tallenna jokaiselle merkitykselliselle suhteelle arvo ja selitys.
+4.3 [x] Tallenna jokaiselle merkitykselliselle suhteelle arvo ja selitys.
 
-4.4 [ ] Generoi maailmaa edeltäviä tapahtumia, jotka selittävät suhteet, velat, vihollisuudet ja salaisuudet.
+4.4 [x] Generoi maailmaa edeltäviä tapahtumia, jotka selittävät suhteet, velat, vihollisuudet ja salaisuudet.
 
-4.5 [ ] Toteuta suhdearvon lukeminen ja muuttaminen rajatulla asteikolla.
+4.5 [x] Toteuta suhdearvon lukeminen ja muuttaminen rajatulla asteikolla.
 
-4.6 [ ] Jätä tietomalliin laajennusvara moniulotteisille suhteille, kuten luottamukselle, pelolle, kunnioitukselle ja velalle.
+4.6 [x] Jätä tietomalliin laajennusvara moniulotteisille suhteille, kuten luottamukselle, pelolle, kunnioitukselle ja velalle.
 
 5. Alkutilanteen konfliktit
 
