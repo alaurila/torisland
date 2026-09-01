@@ -26,15 +26,15 @@
 
 3. Pienen maailman generointi
 
-3.1 [ ] Generoi ensimmäiseen versioon 6 hahmoa, 3 lokaatiota ja 2 ryhmää.
+3.1 [x] Generoi ensimmäiseen versioon 6 hahmoa, 3 lokaatiota ja 2 ryhmää.
 
-3.2 [ ] Arvo hahmoille roolit, ominaisuudet, tavoitteet ja sijainnit.
+3.2 [x] Arvo hahmoille roolit, ominaisuudet, tavoitteet ja sijainnit.
 
-3.3 [ ] Liitä osa hahmoista ryhmiin ja lokaatioihin.
+3.3 [x] Liitä osa hahmoista ryhmiin ja lokaatioihin.
 
-3.4 [ ] Varmista, että generoitu maailma on yhdellä silmäyksellä ymmärrettävä.
+3.4 [x] Varmista, että generoitu maailma on yhdellä silmäyksellä ymmärrettävä.
 
-3.5 [ ] Valmistele generaattori laajennettavaksi 10 hahmoon, 5 lokaatioon ja 3 ryhmään.
+3.5 [x] Valmistele generaattori laajennettavaksi 10 hahmoon, 5 lokaatioon ja 3 ryhmään.
 
 4. Suhteet ja yhteinen historia
 

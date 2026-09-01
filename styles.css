@@ -23,7 +23,7 @@ body {
 .app-shell {
   width: min(70rem, calc(100% - 2rem));
   margin: 0 auto;
-  padding: clamp(3rem, 9vw, 8rem) 0;
+  padding: clamp(3rem, 2vw, 8rem) 0;
 }
 
 .hero {
@@ -110,6 +110,21 @@ h2 {
   margin-bottom: 0;
   color: #9daaa5;
   line-height: 1.6;
+}
+
+.summary-list {
+  display: grid;
+  gap: 0.65rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  color: #b8c4bf;
+  line-height: 1.45;
+  list-style: none;
+}
+
+.summary-list li {
+  padding-top: 0.65rem;
+  border-top: 1px solid #2b3936;
 }
 
 @media (max-width: 42rem) {

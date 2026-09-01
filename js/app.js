@@ -3,7 +3,7 @@ import { createStoryEngine } from "./story-engine.js";
 import { createTextGenerator } from "./text-generator.js";
 import { createStorage } from "./storage.js";
 import { createUi } from "./ui.js";
-import { createWorldState } from "./world-state.js";
+import { generateWorld } from "./world-generator.js";
 
 function startApp() {
   const storage = createStorage();
@@ -11,7 +11,7 @@ function startApp() {
   const storyEngine = createStoryEngine();
   const textGenerator = createTextGenerator();
   const ui = createUi(document);
-  const worldState = createWorldState();
+  const worldState = generateWorld();
 
   // Riippuvuudet ja nykyinen maailmantila kootaan sovelluksen juureen.
   const app = {
@@ -23,7 +23,8 @@ function startApp() {
     worldState,
   };
 
-  app.ui.setStatus("Sovellus valmis");
+  app.ui.renderWorldSummary(app.worldState);
+  app.ui.setStatus("Maailma luotu");
 }
 
 startApp();
