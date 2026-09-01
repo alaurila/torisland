@@ -14,6 +14,8 @@ export function createUi(document) {
   const relationsElement = document.querySelector("#relation-summary");
   const conflictCountElement = document.querySelector("#conflict-count");
   const conflictsElement = document.querySelector("#conflict-summary");
+  const eventCountElement = document.querySelector("#event-count");
+  const eventsElement = document.querySelector("#event-summary");
 
   return {
     setStatus(message) {
@@ -35,6 +37,7 @@ export function createUi(document) {
         ({ status }) => status === "unresolved",
       );
       setText(conflictCountElement, `${unresolvedConflicts.length} ratkaisematonta`);
+      setText(eventCountElement, `${worldState.events.length} tapahtumaa`);
 
       renderSummaryList(
         charactersElement,
@@ -67,6 +70,11 @@ export function createUi(document) {
           const location = entities.get(conflict.locationId)?.name ?? "Tuntematon paikka";
           return `${conflict.reason} Kiireellisyys ${conflict.urgency}/100 — ${location}`;
         },
+      );
+      renderSummaryList(
+        eventsElement,
+        [...worldState.events].reverse().slice(0, 8),
+        (event) => `${event.historical ? "Ennen alkua" : `Päivä ${event.day}`}: ${event.summary}`,
       );
     },
   };

@@ -11,6 +11,7 @@ import {
 import { createRelation } from "./relations.js";
 import { assertWorldHasStorySeeds, createConflict } from "./conflicts.js";
 import { createId, validateWorldState } from "./validation.js";
+import { createEvent } from "./events.js";
 
 export const WORLD_LIMITS = Object.freeze({
   characters: 10,
@@ -380,7 +381,7 @@ function addHistoricalRelation(worldState, source, target, value, reason, eventT
 }
 
 function createHistoricalEvent({ type, actorId, targetId, locationId, summary }) {
-  return {
+  return createEvent({
     id: createId("event"),
     type,
     actorId,
@@ -390,7 +391,7 @@ function createHistoricalEvent({ type, actorId, targetId, locationId, summary })
     day: 0,
     summary,
     historical: true,
-  };
+  });
 }
 
 function sample(values, count, random) {

@@ -194,6 +194,24 @@ export function validateWorldState(worldState) {
     }
   }
 
+  for (const event of worldState.events) {
+    assertString(event.type, `Tapahtuman ${event.id} type`);
+    assertReference(event.actorId, actorIds, `Tapahtuman ${event.id} actorId`, false);
+    assertReference(event.targetId, actorIds, `Tapahtuman ${event.id} targetId`, false);
+    if (event.actorId === event.targetId) {
+      throw new Error(`Tapahtuman ${event.id} toimija ja kohde eivät voi olla samat.`);
+    }
+    assertReference(event.locationId, locationIds, `Tapahtuman ${event.id} locationId`, false);
+    assertStringArray(event.witnessIds, `Tapahtuman ${event.id} witnessIds`);
+    for (const witnessId of event.witnessIds) {
+      assertReference(witnessId, characterIds, `Tapahtuman ${event.id} witnessIds`, false);
+    }
+    if (!Number.isInteger(event.day) || event.day < 0) {
+      throw new Error(`Tapahtuman ${event.id} day pitää olla nolla tai positiivinen kokonaisluku.`);
+    }
+    assertString(event.summary, `Tapahtuman ${event.id} summary`);
+  }
+
   try {
     JSON.stringify(worldState);
   } catch (error) {

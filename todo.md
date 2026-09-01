@@ -64,15 +64,15 @@
 
 6. Tapahtumajärjestelmä
 
-6.1 [ ] Määritä tapahtuman tietomalli: tunniste, tyyppi, toimija, kohde, lokaatio, todistajat ja päivä.
+6.1 [x] Määritä tapahtuman tietomalli: tunniste, tyyppi, toimija, kohde, lokaatio, todistajat ja päivä.
 
-6.2 [ ] Luo vähintään 10 tapahtumatemplatea, kuten riita, ryöstö, varkaus, avunpyyntö, uhkaus, petos ja sovintoyritys.
+6.2 [x] Luo vähintään 10 tapahtumatemplatea, kuten riita, ryöstö, varkaus, avunpyyntö, uhkaus, petos ja sovintoyritys.
 
-6.3 [ ] Valitse tapahtumien osapuolet suhteiden, tavoitteiden, konfliktien ja sijaintien perusteella.
+6.3 [x] Valitse tapahtumien osapuolet suhteiden, tavoitteiden, konfliktien ja sijaintien perusteella.
 
-6.4 [ ] Estä epäkelvot tapahtumat tarkistamalla templaten vaatimukset ennen generointia.
+6.4 [x] Estä epäkelvot tapahtumat tarkistamalla templaten vaatimukset ennen generointia.
 
-6.5 [ ] Lisää generoitu tapahtuma maailman tapahtumahistoriaan.
+6.5 [x] Lisää generoitu tapahtuma maailman tapahtumahistoriaan.
 
 7. Tapahtumien seuraukset, muistot ja tieto
 
