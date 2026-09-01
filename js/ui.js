@@ -16,6 +16,8 @@ export function createUi(document) {
   const conflictsElement = document.querySelector("#conflict-summary");
   const eventCountElement = document.querySelector("#event-count");
   const eventsElement = document.querySelector("#event-summary");
+  const situationCountElement = document.querySelector("#situation-count");
+  const situationsElement = document.querySelector("#situation-summary");
 
   return {
     setStatus(message) {
@@ -38,6 +40,7 @@ export function createUi(document) {
       );
       setText(conflictCountElement, `${unresolvedConflicts.length} ratkaisematonta`);
       setText(eventCountElement, `${worldState.events.length} tapahtumaa`);
+      setText(situationCountElement, `${worldState.activeSituations.length} aktiivista`);
 
       renderSummaryList(
         charactersElement,
@@ -81,6 +84,12 @@ export function createUi(document) {
             : "";
           return `${when}: ${event.summary}${effects}`;
         },
+      );
+      renderSummaryList(
+        situationsElement,
+        worldState.activeSituations,
+        (situation) =>
+          `${situation.title} — jännite ${situation.tension}. Perusteet: ${situation.reasons.join(" ")}`,
       );
     },
   };

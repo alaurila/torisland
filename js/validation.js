@@ -240,6 +240,36 @@ export function validateWorldState(worldState) {
     }
   }
 
+  for (const situation of worldState.activeSituations) {
+    assertString(situation.type, `Tilanteen ${situation.id} type`);
+    assertString(situation.title, `Tilanteen ${situation.id} title`);
+    assertStringArray(situation.partyIds, `Tilanteen ${situation.id} partyIds`);
+    if (new Set(situation.partyIds).size < 2) {
+      throw new Error(`Tilanteella ${situation.id} pitää olla kaksi eri osapuolta.`);
+    }
+    for (const partyId of situation.partyIds) {
+      assertReference(partyId, actorIds, `Tilanteen ${situation.id} partyIds`, false);
+    }
+    assertReference(situation.locationId, locationIds, `Tilanteen ${situation.id} locationId`, false);
+    assertNumber(situation.tension, `Tilanteen ${situation.id} tension`, { min: 0 });
+    assertStringArray(situation.reasons, `Tilanteen ${situation.id} reasons`);
+    if (situation.reasons.length === 0) {
+      throw new Error(`Tilanteelta ${situation.id} puuttuvat generoinnin perustelut.`);
+    }
+    assertStringArray(situation.sourceIds, `Tilanteen ${situation.id} sourceIds`);
+    for (const sourceId of situation.sourceIds) {
+      if (!ids.has(sourceId)) {
+        throw new Error(`Tilanteen ${situation.id} lähde "${sourceId}" puuttuu maailmasta.`);
+      }
+    }
+    if (situation.status !== "active") {
+      throw new Error(`Tilanteella ${situation.id} on tuntematon tila.`);
+    }
+    if (!Number.isInteger(situation.createdDay) || situation.createdDay < 1) {
+      throw new Error(`Tilanteen ${situation.id} createdDay pitää olla positiivinen kokonaisluku.`);
+    }
+  }
+
   try {
     JSON.stringify(worldState);
   } catch (error) {

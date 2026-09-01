@@ -90,17 +90,17 @@
 
 8. Jännitteiden ja tilanteiden tunnistaminen
 
-8.1 [ ] Laske tilanteille jännitearvo vihamielisyydestä, ristiriitaisista tavoitteista, salaisuuksista, veloista, niukkuudesta ja läheisyydestä.
+8.1 [x] Laske tilanteille jännitearvo vihamielisyydestä, ristiriitaisista tavoitteista, salaisuuksista, veloista, niukkuudesta ja läheisyydestä.
 
-8.2 [ ] Tunnista voimakkaat vihollisuudet, maksamattomat velat, uhkatut hahmot ja samassa paikassa olevat viholliset.
+8.2 [x] Tunnista voimakkaat vihollisuudet, maksamattomat velat, uhkatut hahmot ja samassa paikassa olevat viholliset.
 
-8.3 [ ] Tunnista salaisuudet, todistajat, resurssipulat ja ratkaisemattomat aiemmat tapahtumat.
+8.3 [x] Tunnista salaisuudet, todistajat, resurssipulat ja ratkaisemattomat aiemmat tapahtumat.
 
-8.4 [ ] Muodosta löydöksistä aktiivisia tarinatilanteita ennen tehtävien luomista.
+8.4 [x] Muodosta löydöksistä aktiivisia tarinatilanteita ennen tehtävien luomista.
 
-8.5 [ ] Järjestä tilanteet jännitearvon mukaan ja valitse kiinnostavimmat käsiteltäviksi.
+8.5 [x] Järjestä tilanteet jännitearvon mukaan ja valitse kiinnostavimmat käsiteltäviksi.
 
-8.6 [ ] Tallenna jokaiselle tilanteelle perustelut, joista näkyy miksi se generoitiin.
+8.6 [x] Tallenna jokaiselle tilanteelle perustelut, joista näkyy miksi se generoitiin.
 
 9. Tehtävien muodostaminen
 

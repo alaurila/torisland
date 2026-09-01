@@ -16,6 +16,7 @@ function startApp() {
   const worldState = generateWorld();
   const event = generateEvent(worldState);
   applyEventConsequences(worldState, event);
+  storyEngine.findSituations(worldState);
 
   // Riippuvuudet ja nykyinen maailmantila kootaan sovelluksen juureen.
   const app = {
@@ -28,7 +29,7 @@ function startApp() {
   };
 
   app.ui.renderWorldSummary(app.worldState);
-  app.ui.setStatus("Maailma luotu");
+  app.ui.setStatus(`${app.worldState.activeSituations.length} tilannetta löydetty`);
 }
 
 startApp();
