@@ -17,7 +17,7 @@ import { GOALS } from "./goals.js";
 
 export const WORLD_LIMITS = Object.freeze({
   characters: 10,
-  locations: 5,
+  locations: 25,
   factions: 3,
 });
 
@@ -177,7 +177,7 @@ const TRAITS = [
   "utelias",
 ];
 
-const LOCATION_DEFINITIONS = [
+const CORE_LOCATION_DEFINITIONS = [
   {
     name: "Jokisatama",
     description: "Vilkas satama, jossa laillinen kauppa ja salakuljetus sekoittuvat.",
@@ -210,6 +210,134 @@ const LOCATION_DEFINITIONS = [
   },
 ];
 
+const ADDITIONAL_LOCATION_DEFINITIONS = [
+  {
+    name: "Aamuruskon tori",
+    description: "Kauppapaikka, joka herää eloon jo ennen auringonnousua.",
+    tags: ["tori", "kauppa"],
+    safety: 20,
+  },
+  {
+    name: "Korppikallio",
+    description: "Jyrkkä näköalapaikka, jolla korpit vartioivat vanhoja hautakiviä.",
+    tags: ["kallio", "hautausmaa"],
+    safety: -20,
+  },
+  {
+    name: "Hopealähde",
+    description: "Kirkas lähde, jonka vedellä sanotaan olevan parantavia ominaisuuksia.",
+    tags: ["lähde", "pyhä"],
+    safety: 35,
+  },
+  {
+    name: "Tuulimyllyn mäki",
+    description: "Avoin mäki, jonka vanha mylly jauhaa viljaa taukoamatta.",
+    tags: ["mylly", "maaseutu"],
+    safety: 30,
+  },
+  {
+    name: "Nokinen paja",
+    description: "Kuuma ja meluisa paja, jossa valmistetaan myös tilaustöitä salaa.",
+    tags: ["paja", "käsityö"],
+    safety: 10,
+  },
+  {
+    name: "Rantavartiotorni",
+    description: "Korkea torni, josta tarkkaillaan meriliikennettä ja lähestyviä uhkia.",
+    tags: ["torni", "vartiointi"],
+    safety: 40,
+  },
+  {
+    name: "Kuiskaava suo",
+    description: "Upottava suo, jonka sumusta kuuluu öisin tunnistamattomia ääniä.",
+    tags: ["suo", "vaarallinen"],
+    safety: -55,
+  },
+  {
+    name: "Pyhän liekin temppeli",
+    description: "Vanha temppeli, jossa ikuinen tuli valaisee kivisiä saleja.",
+    tags: ["temppeli", "uskonto"],
+    safety: 45,
+  },
+  {
+    name: "Punaisen ankkurin kapakka",
+    description: "Merimiesten suosima kapakka, jossa riidat ja huhut leviävät nopeasti.",
+    tags: ["kapakka", "kohtaamispaikka"],
+    safety: -5,
+  },
+  {
+    name: "Hylätty majakka",
+    description: "Sammutettu majakka seisoo yksin myrskyisen niemen kärjessä.",
+    tags: ["majakka", "raunio"],
+    safety: -40,
+  },
+  {
+    name: "Lasimestarin kuja",
+    description: "Kapea käsityöläiskuja, jonka ikkunoissa hohtavat värikkäät lasityöt.",
+    tags: ["kaupunki", "käsityö"],
+    safety: 15,
+  },
+  {
+    name: "Kuparikaivos",
+    description: "Toimiva kaivos, jonka syvimmistä käytävistä löytyy outoja merkkejä.",
+    tags: ["kaivos", "työmaa"],
+    safety: -25,
+  },
+  {
+    name: "Sammalhovin rauniot",
+    description: "Kasvillisuuden valtaama kartano kätkee muistoja kadonneesta suvusta.",
+    tags: ["raunio", "mysteeri"],
+    safety: -35,
+  },
+  {
+    name: "Pohjoisportti",
+    description: "Linnoitettu portti valvoo kulkua kylään johtavalla maantiellä.",
+    tags: ["portti", "vartiointi"],
+    safety: 35,
+  },
+  {
+    name: "Kaislarannan kalastajakylä",
+    description: "Pieni rantayhteisö elää kalastuksesta ja jokivarren kaupasta.",
+    tags: ["kylä", "kalastus"],
+    safety: 25,
+  },
+  {
+    name: "Kuunpeilin luola",
+    description: "Kiteinen luola heijastaa valoa kuin tyyni vedenpinta.",
+    tags: ["luola", "mysteeri"],
+    safety: -45,
+  },
+  {
+    name: "Vanha tulliasema",
+    description: "Tienvarren tullirakennuksessa tarkastetaan kauppiaiden lastit.",
+    tags: ["tulli", "kauppa"],
+    safety: 20,
+  },
+  {
+    name: "Varjolehdon yrttitarha",
+    description: "Aidattu puutarha kasvattaa lääkekasveja ja harvinaisia yrttejä.",
+    tags: ["puutarha", "rohdot"],
+    safety: 30,
+  },
+  {
+    name: "Rautasilta",
+    description: "Vanha silta on ainoa turvallinen ylitys kuohuvan rotkojoen yli.",
+    tags: ["silta", "reitti"],
+    safety: 5,
+  },
+  {
+    name: "Tähtitornin observatorio",
+    description: "Oppineet tarkkailevat täällä tähtiä ja kirjaavat enteitä.",
+    tags: ["torni", "tutkimus"],
+    safety: 15,
+  },
+];
+
+const LOCATION_DEFINITIONS = [
+  ...CORE_LOCATION_DEFINITIONS,
+  ...ADDITIONAL_LOCATION_DEFINITIONS,
+];
+
 const FACTION_DEFINITIONS = [
   {
     name: "Vartijat",
@@ -233,10 +361,10 @@ const FACTION_DEFINITIONS = [
 
 /**
  * Luo pienen maailman. Oletuskoko on helppo hahmottaa, mutta asetukset tukevat
- * suoraan MVP-tavoitteen enimmäiskokoa 10 hahmoa, 5 lokaatiota ja 3 ryhmää.
+ * suoraan enimmäiskokoa 10 hahmoa, 25 lokaatiota ja 3 ryhmää.
  */
 export function generateWorld(
-  { characterCount = 6, locationCount = 3, factionCount = 2 } = {},
+  { characterCount = 6, locationCount = 11, factionCount = 2 } = {},
   random = Math.random,
 ) {
   assertCount("characterCount", characterCount, 4, WORLD_LIMITS.characters);
@@ -245,7 +373,12 @@ export function generateWorld(
   if (typeof random !== "function") throw new TypeError("random pitää olla funktio.");
 
   const worldState = createWorldState();
-  const locationDefinitions = sample(LOCATION_DEFINITIONS, locationCount, random);
+  const locationDefinitions = locationCount === 11
+    ? [
+        ...sample(CORE_LOCATION_DEFINITIONS, 3, random),
+        ...sample(ADDITIONAL_LOCATION_DEFINITIONS, 8, random),
+      ]
+    : sample(LOCATION_DEFINITIONS, locationCount, random);
 
   worldState.locations = locationDefinitions.map((definition) => createLocation(definition));
   worldState.factions = sample(FACTION_DEFINITIONS, factionCount, random).map(

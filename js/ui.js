@@ -153,16 +153,10 @@ export function createUi(document) {
           return `${conflict.reason} Kiireellisyys ${conflict.urgency}/100 — ${location}`;
         },
       );
-      renderSummaryList(
+      renderEventCards(
         eventsElement,
         [...worldState.events].reverse().slice(0, 8),
-        (event) => {
-          const when = event.historical ? "Ennen alkua" : `Päivä ${event.day}`;
-          const effects = event.effects.length > 0
-            ? ` Seuraukset: ${event.effects.join("; ")}.`
-            : "";
-          return `${when}: ${event.summary}${effects}`;
-        },
+        entities,
       );
       renderSummaryList(
         situationsElement,
@@ -209,6 +203,53 @@ function renderSummaryList(element, items, formatItem) {
 
 function setText(element, text) {
   if (element) element.textContent = text;
+}
+
+function renderEventCards(element, events, entities) {
+  if (!element) return;
+  element.classList.add("event-list");
+  element.replaceChildren(
+    ...events.map((event) => {
+      const item = element.ownerDocument.createElement("li");
+      item.className = "event-card";
+
+      const meta = element.ownerDocument.createElement("div");
+      meta.className = "event-meta";
+      const day = element.ownerDocument.createElement("span");
+      day.className = "event-day";
+      day.textContent = event.historical ? "Ennen alkua" : `Päivä ${event.day}`;
+      meta.append(day);
+
+      const location = entities.get(event.locationId);
+      if (location) {
+        const place = element.ownerDocument.createElement("span");
+        place.className = "event-location";
+        place.textContent = `⌖ ${location.name}`;
+        meta.append(place);
+      }
+
+      const summary = element.ownerDocument.createElement("p");
+      summary.className = "event-summary";
+      summary.textContent = event.summary;
+      item.append(meta, summary);
+
+      if (event.effects.length > 0) {
+        const effectHeading = element.ownerDocument.createElement("p");
+        effectHeading.className = "event-effect-heading";
+        effectHeading.textContent = "Seuraukset";
+        const effects = element.ownerDocument.createElement("ul");
+        effects.className = "event-effects";
+        for (const effect of event.effects) {
+          const effectItem = element.ownerDocument.createElement("li");
+          effectItem.textContent = effect;
+          effects.append(effectItem);
+        }
+        item.append(effectHeading, effects);
+      }
+
+      return item;
+    }),
+  );
 }
 
 function renderQuestCards(element, quests) {
