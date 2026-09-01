@@ -3,6 +3,7 @@ import { createStoryEngine } from "./story-engine.js";
 import { createTextGenerator } from "./text-generator.js";
 import { createStorage } from "./storage.js";
 import { createUi } from "./ui.js";
+import { createWorldState } from "./world-state.js";
 
 function startApp() {
   const storage = createStorage();
@@ -10,14 +11,16 @@ function startApp() {
   const storyEngine = createStoryEngine();
   const textGenerator = createTextGenerator();
   const ui = createUi(document);
+  const worldState = createWorldState();
 
-  // Riippuvuudet kootaan täällä. Varsinainen maailmantila lisätään kohdassa 2.
+  // Riippuvuudet ja nykyinen maailmantila kootaan sovelluksen juureen.
   const app = {
     storage,
     worldSimulation,
     storyEngine,
     textGenerator,
     ui,
+    worldState,
   };
 
   app.ui.setStatus("Sovellus valmis");

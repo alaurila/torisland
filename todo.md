@@ -12,15 +12,15 @@
 
 2. Maailman tietorakenne
 
-2.1 [ ] Määritä serialisoitava `worldState`-objekti.
+2.1 [x] Määritä serialisoitava `worldState`-objekti.
 
-2.2 [ ] Lisää `worldStateen` päivä, hahmot, lokaatiot, ryhmät, suhteet, muistot, tiedot, tapahtumat, aktiiviset tilanteet ja suoritetut tehtävät.
+2.2 [x] Lisää `worldStateen` päivä, hahmot, lokaatiot, ryhmät, suhteet, muistot, tiedot, tapahtumat, aktiiviset tilanteet ja suoritetut tehtävät.
 
-2.3 [ ] Määritä hahmon tietomalli: tunniste, nimi, rooli, sijainti, ryhmäjäsenyydet, kolme ominaisuutta ja yksi tavoite.
+2.3 [x] Määritä hahmon tietomalli: tunniste, nimi, rooli, sijainti, ryhmäjäsenyydet, kolme ominaisuutta ja yksi tavoite.
 
-2.4 [ ] Määritä lokaation ja ryhmän tietomallit.
+2.4 [x] Määritä lokaation ja ryhmän tietomallit.
 
-2.5 [ ] Määritä tarpeiden, resurssien, salaisuuksien ja velkojen tietomallit.
+2.5 [x] Määritä tarpeiden, resurssien, salaisuuksien ja velkojen tietomallit.
 
 2.6 [ ] Lisää tietomallien validointi ja yksilöllisten tunnisteiden luonti.
 
